@@ -24,17 +24,31 @@
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" />
-                                                        <label for="inputFirstName">First name</label>
+                                                        <input class="form-control" id="inputName" type="text" placeholder="Enter your name" />
+                                                        <label for="inputName">Full name</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-floating">
-                                                        <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" />
-                                                        <label for="inputLastName">Last name</label>
+                                                        <input class="form-control" id="inputPhone" type="text" placeholder="Enter your phone" />
+                                                        <label for="inputPhone">Phone</label>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <!-- <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <div class="form-floating mb-3 mb-md-0">
+                                                        <input class="form-control" id="inputGender" type="text" placeholder="Type your Gender" />
+                                                        <label for="inputGender">Gender</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-floating">
+                                                        <input class="form-control" id="inputAge" type="text" placeholder="Enter your Age" />
+                                                        <label for="inputAge">Age</label>
+                                                    </div>
+                                                </div>
+                                            </div> -->
                                             <div class="form-floating mb-3">
                                                 <input class="form-control" id="inputEmail" type="email" placeholder="name@example.com" />
                                                 <label for="inputEmail">Email address</label>
@@ -53,6 +67,13 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <label for="gender">Giới tính:</label>
+                                            <select id="gender" name="gender" class="col-md-55">
+                                                    <option value="male">Nam</option>
+                                                    <option value="female">Nữ</option>
+                                                    <option value="other">Khác</option>
+                                                    <option value="notsaid">Không muốn tiết lộ</option>
+                                            </select>
                                             <div class="mt-4 mb-0">
                                                 <div class="d-grid"><a class="btn btn-primary btn-block" onclick="Register()">Create Account</a></div>
                                             </div>

@@ -91,8 +91,6 @@ function ClearTable(){
 
 
 
-
-
 function Register(){
     var user = document.getElementById("inputEmail");
     var pass = document.getElementById("inputPassword");
@@ -109,6 +107,7 @@ function Register(){
       // Signed in 
       var user = userCredential.user;
       alert('Register successful!');
+      window.location.href = 'http://127.0.0.1:5501/login.html';
       // ...
     })
     .catch((error) => {
@@ -117,7 +116,26 @@ function Register(){
       alert('Register not sucessful!');
       // ..
     });
+
+    //Save info to table users//
+    var inputemail = document.getElementById("inputEmail").value;
+    var inputname = document.getElementById("inputName").value;
+    var inputphone = document.getElementById("inputPhone").value;
+    var inputgender = document.getElementById("gender").value;
+
+    
+    const usersReff = firebase.firestore().collection('teacher');
+
+    // Thêm một document mới với ID tự tạo
+    usersReff.add({
+      name: inputname,
+      email: inputemail,
+      phone: inputphone,
+      gender: inputgender
+    })
+
 }
+
 
 function DelCookie(){
     const cookieName = "email";
@@ -180,7 +198,37 @@ function RecoveryPassword(){
     });
 }
 
+function CheckID(){
+  ///////////////////////////
+              // Lấy collection "users" từ Firestore
+              const usersRef = firebase.firestore().collection('teacher');
 
+              // Sắp xếp các documents theo trường "age" theo thứ tự giảm dần
+              usersRef.orderBy('id', 'desc')
+          
+                // Giới hạn số lượng documents trả về là 1
+                .limit(1)
+          
+                // Lấy documents trả về
+                .get()
+                .then(querySnapshot => {
+                  // Lấy document cuối cùng trong danh sách documents trả về
+                  const doc = querySnapshot.docs[0];
+                  if (doc.exists) {
+                    // Lấy giá trị của trường "age" trong document cuối cùng
+                    const maxid = doc.data().id;
+                    const maxxid = maxid + 1;
+                    return maxxid;
+                    console.log('Giá trị lớn nhất của trường "id" là:', maxxid);
+                  } else {
+                    console.log('Không tìm thấy documents');
+                  }
+                })
+                .catch(error => {
+                  console.log('Lỗi:', error);
+                });
+              //////////////////////////
+}
 
 
   function CheckloginOld() {
