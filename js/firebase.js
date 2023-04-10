@@ -83,7 +83,7 @@ function ClearTable(){
     const rows = table.getElementsByTagName("tr");
     
     // Lặp qua từng dòng và xóa chúng
-    while (rows.length > 0) {
+    while (rows.length > 1) {
       table.deleteRow(0);
     }
     
