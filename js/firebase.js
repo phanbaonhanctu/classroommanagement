@@ -78,6 +78,104 @@ function GetData(){
       });
 }
 
+function GetDataTable(){
+  // db.collection("diemdanh").get().then((querySnapshot) => {
+  //   // Duyệt qua từng tài liệu và xuất ID của nó
+  //   querySnapshot.forEach((doc) => {
+  //     console.log(doc.id);
+  //   });
+  // });
+  db.collection("diemdanh").onSnapshot((querySnapshot) => {
+      var stt = 0;
+      ClearTableDiemdanh();
+      const tableBody = $("#diemdanh tbody");
+      querySnapshot.forEach((doc) => {
+      const bookk = doc.data();
+      const timestamp = bookk.time; // timestamp được trả về từ Firestore
+      const date = new Date(timestamp.seconds * 1000); // chuyển đổi timestamp thành đối tượng Date
+      const dateString = date.toLocaleDateString(); // định dạng ngày tháng thành chuỗi
+      // console.log(dateString); // hiển thị ngày tháng dưới dạng chuỗi
+        stt++;
+        const row = `
+          <tr>
+            <td>${stt}</td>
+            <td>${bookk.name}</td>
+            <td>${dateString}</td>
+            <td>${bookk.listsv.length}</td>
+            <td><a href="http://127.0.0.1:5501/charts.html?id=${doc.id}" target="_blank">test</a></td>
+          </tr>
+        `;
+        tableBody.append(row);
+      });
+      // Initialize tablesorter
+      $("#diemdanh").tablesorter();
+    });
+}
+
+// Hàm lấy họ tên của sinh viên từ Firestore
+function getStudentName(mssv) {
+// Lấy reference đến document của sinh viên
+var studentRef = db.collection("student").doc(mssv);
+
+// Lấy dữ liệu của document đó
+studentRef.get().then(function(doc) {
+  const tableBody = $("#diemdanhchitiet tbody");
+    if (doc.exists) {
+        // Lấy thông tin họ tên của sinh viên từ dữ liệu của document
+        var studentName = doc.data().name;
+        const row = `
+          <tr>
+            <td>${mssv}</td>
+            <td>${studentName}</td>
+          </tr>
+        `;
+        tableBody.append(row);
+    } else {
+        console.log("Không tìm thấy document!");
+    }
+}).catch(function(error) {
+    console.log("Lỗi khi lấy dữ liệu:", error);
+
+});
+}
+
+
+
+function diemdanhchitiet(){
+  // db.collection("diemdanh").get().then((querySnapshot) => {
+  //   // Duyệt qua từng tài liệu và xuất ID của nó
+  //   querySnapshot.forEach((doc) => {
+  //     console.log(doc.id);
+  //   });
+  // });
+  const queryString = window.location.search; // lấy chuỗi truy vấn từ URL
+  const urlParams = new URLSearchParams(queryString); // tạo đối tượng URLSearchParams để truy cập các tham số truy vấn
+  const id = urlParams.get('id'); // lấy giá trị của biến "name"
+  console.log("Lỗi: ", id);
+
+    db.collection("diemdanh").doc(id).get().then((doc) => {
+      if (doc.exists) {
+        var name = doc.data().listsv;
+        for (let index = 0; index < name.length; index++) {
+          const element = name[index];
+          getStudentName(element);
+      }
+      } else {
+        console.log("Tài liệu không tồn tại");
+      }
+    }).catch((error) => {
+      console.log("Lỗi: ", error);
+      $("#diemdanhchitiet").tablesorter();
+    });
+}
+
+
+
+
+
+
+
+
 function ClearTable(){
     const table = document.getElementById("my-table");
     const rows = table.getElementsByTagName("tr");
@@ -87,6 +185,17 @@ function ClearTable(){
       table.deleteRow(0);
     }
     
+}
+
+function ClearTableDiemdanh(){
+  const table = document.getElementById("diemdanh");
+  const rows = table.getElementsByTagName("tr");
+  
+  // Lặp qua từng dòng và xóa chúng
+  while (rows.length > 1) {
+    table.deleteRow(0);
+  }
+  
 }
 
 
@@ -122,16 +231,19 @@ function Register(){
     var inputname = document.getElementById("inputName").value;
     var inputphone = document.getElementById("inputPhone").value;
     var inputgender = document.getElementById("gender").value;
+    var inputmscb = document.getElementById("inputmscb").value;
 
     
-    const usersReff = firebase.firestore().collection('teacher');
+    const usersReff = firebase.firestore().collection('info');
 
     // Thêm một document mới với ID tự tạo
     usersReff.add({
+      id: inputmscb,
       name: inputname,
       email: inputemail,
       phone: inputphone,
-      gender: inputgender
+      gender: inputgender,
+      rule: "0"
     })
 
 }
@@ -161,9 +273,25 @@ function Checklogin(){
       // Signed in
       var user = userCredential.user;
       alert('Login successful!');
-      document.cookie = "email="+email;
-      document.cookie = "rule=2";
-      window.location.href = 'http://127.0.0.1:5501/index.html';
+
+
+
+
+    // Lấy tham chiếu đến collection "users"
+      const usersRef = firebase.firestore().collection("info");
+
+      // Tìm kiếm các document có trường "email" có giá trị là "example@gmail.com"
+      usersRef.where("email", "==", email).get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          // Truy cập trường "name" của document
+          window.location.href = 'http://127.0.0.1:5501/index.html';
+          document.cookie = "email="+email;
+          document.cookie = "rule="+doc.data().rule;
+        });
+      }).catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+ //     window.location.href = 'http://127.0.0.1:5501/index.html';
       // ...
     })
     .catch((error) => {
@@ -172,6 +300,13 @@ function Checklogin(){
       alert('Invalid username or password.');
     });
 }
+
+function checkRule(email){
+
+}
+
+
+
 
 function GetCookie(){
     const cookies = document.cookie.split(";"); // Lấy danh sách các cookie
@@ -278,3 +413,5 @@ function CheckID(){
 
 GetCookie();
 GetData();
+GetDataTable();
+diemdanhchitiet();
