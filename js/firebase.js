@@ -216,7 +216,7 @@ function Register(){
       // Signed in 
       var user = userCredential.user;
       alert('Register successful!');
-      window.location.href = 'http://127.0.0.1:5501/login.html';
+      window.location.href = '/login/login.html';
       // ...
     })
     .catch((error) => {
@@ -271,22 +271,30 @@ function Checklogin(){
     // }
     firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
       // Signed in
-      var user = userCredential.user;
-      alert('Login successful!');
+      // var user = userCredential.user;
+      // alert('Login successful!');
+      // // Lưu cookie
+      // document.cookie = "email="+email+"; expires=Thu, 15 Apr 2023 12:00:00 UTC; path=/";
 
+      // // Chuyển hướng đến trang mới
+      // window.location.replace("/dashboard/");
+
+      // // Đọc cookie
+      // const cookies = document.cookie;
+      // console.log(cookies); // "username=John Doe"
 
 
 
     // Lấy tham chiếu đến collection "users"
-      const usersRef = firebase.firestore().collection("info");
+       const usersRef = firebase.firestore().collection("info");
 
-      // Tìm kiếm các document có trường "email" có giá trị là "example@gmail.com"
+      // // Tìm kiếm các document có trường "email" có giá trị là "example@gmail.com"
       usersRef.where("email", "==", email).get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           // Truy cập trường "name" của document
-          window.location.href = 'http://127.0.0.1:5501/index.html';
-          document.cookie = "email="+email;
-          document.cookie = "rule="+doc.data().rule;
+          document.cookie = "email="+email+"; path=/";
+          document.cookie = "rule="+doc.data().rule+"; path=/";
+          window.location.replace("/dashboard/index.html");
         });
       }).catch((error) => {
         console.log("Error getting documents: ", error);
@@ -411,7 +419,5 @@ function CheckID(){
 
 }
 
-GetCookie();
 GetData();
 GetDataTable();
-diemdanhchitiet();
