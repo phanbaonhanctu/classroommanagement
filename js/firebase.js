@@ -152,14 +152,16 @@ function GetID(){
       var cookie = cookies[i].trim();
       if (cookie.indexOf("id=") == 0) {
         var value = cookie.substring("id=".length, cookie.length);
+
         var testt = document.getElementById("outputID");
         testt.value = "Mã số cán bộ của bạn là: "+value;
 
         var test = document.getElementById("outputID2");
         test.value = "Mã số cán bộ của bạn là: "+value;
+
         var test1 = document.getElementById("outputID3");
         test1.value = "Mã số cán bộ của bạn là: "+value;
-        // console.log(value);
+        console.log(value);
         return value;
         break;
       }
@@ -358,7 +360,7 @@ function GetID(){
         mssv: "",
         name: "",
         phone: "",
-        rule: "1",
+        rule: "2",
         email: "",
         gender: "",
         age: ""
@@ -376,6 +378,7 @@ function GetID(){
         }
         else if(key == "email"){
           newStudent.email =  data[i][key];
+          RegisterStudent(newStudent.email);
         }
         else if(key == "gender"){
           newStudent.gender =  data[i][key];
@@ -391,7 +394,7 @@ function GetID(){
         }
       }
         SaveDatabase("student",newStudent.mssv,newStudent);
-    } alert("Tạo lớp học thành công");
+    } alert("Tạo lớp học thành công. Tài khoản mặc định cho sinh viên là email với mật khẩu 123456");
     SaveDatabaseRandomID("classroom",newClassroom);
   }
   
@@ -511,7 +514,7 @@ function xemchitietdiemdanh(){
   document.getElementById("dashboardclassroom").hidden = true;
   document.getElementById("xemchitiet").hidden = false;
   document.getElementById("create_diemdanh").hidden = true;
-  let id = "NuyEu96yAgHt0AAK9SAN";
+  let id = "rRPsjv1QdEczsROKKRzT";
     db.collection("diemdanh").doc(id).get().then((doc) => {
       if (doc.exists) {
         var name = doc.data().listsv;
@@ -571,6 +574,23 @@ function ClearTableDiemdanh(){
       table.deleteRow(1);
     }
   }
+
+
+function RegisterStudent(email){
+  firebase.auth().createUserWithEmailAndPassword(email, "123456")
+  .then((userCredential) => {
+    // Signed in 
+    var user = userCredential.user;
+    console.log('Register successful!' + email);
+    // ...
+  })
+  .catch((error) => {
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    console.log('Register not sucessful!' + email);
+    // ..
+  });
+}
 
 
 function Register(){
