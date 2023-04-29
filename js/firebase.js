@@ -691,6 +691,28 @@ function RecoveryPassword(){
     });
 }
 
+  function Notification(){
+    const formtb = document.getElementById("notification");
+    let html = '';
+    var tb = db.collection("notification");
+    tb.onSnapshot((querySnapshot) => {
+      Delnotification();
+      querySnapshot.forEach((doc) => {
+        var thongbao = doc.data();
+        html += '<li class="header_notify-item">'+'<h5>'+thongbao.name+'</h5><h6>'+thongbao.time+'</h6></li>';
+      });
+      formtb.innerHTML = html;
+      html = "";
+    }).catch(function(error) {
+      console.log("Lỗi khi lấy dữ liệu:", error);
+  });
+  }
+
+  function Delnotification(){
+    const del = document.getElementById('notification');
+    del.innerHTML = '';
+  }
 
 GetData();
 GetDataTable();
+Notification();
