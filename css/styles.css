@@ -384,6 +384,7 @@ button,
 [type=reset],
 [type=submit] {
   -webkit-appearance: button;
+  appearance: button;
 }
 button:not(:disabled),
 [type=button]:not(:disabled),
@@ -442,6 +443,7 @@ legend + * {
 [type=search] {
   outline-offset: -2px;
   -webkit-appearance: textfield;
+          appearance: textfield;
 }
 
 /* rtl:raw:
@@ -463,6 +465,7 @@ legend + * {
 ::file-selector-button {
   font: inherit;
   -webkit-appearance: button;
+  appearance: button;
 }
 
 output {
@@ -11295,5 +11298,90 @@ body {
 }
 
 .header_notify-item{
+ font-size: large;
+}
 
+
+/* config chat box */
+
+#chatbox {
+  width: 80%;
+  height: 425px;
+  margin-left: 1%;
+  border: 4px solid black;
+  overflow-y: scroll;
+  font-size: 20px;
+}
+
+.sentMessage{
+  margin-left: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 20px;
+  max-width: 30%;
+  background-color: #d49639;
+  color: #fff;
+  border-radius: 18px 18px 0 18px;
+  border: 1px solid black;
+}
+
+.reciveMessage{
+  margin-right: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 20px;
+  background: #0a53be;
+  color: #fff;
+  border-radius: 18px 18px 18px 0;
+  border: 1px solid black;
+}
+
+.listfriend{
+  width: 80%;
+  height: 42px;
+  margin-top: 2%;
+  margin-left: 1%;
+  border: 1px solid black;
+  font-size: 20px;
+}
+
+#inputChat {
+  width: 70%;
+  height: 42px;
+  margin-top: 2%;
+  margin-left: 1%;
+  border: 2px solid black;
+  font-size: 20px;
+}
+
+#btnSend{
+  background-color: #6f42c1;
+  border-radius: 10%;
+  height: 44px;
+  width: 10%;
+}
+
+.friend-list {
+  position: fixed;
+  top: 13%;
+  right: 0;
+  width: 15%;
+  height: 100%;
+  background-color: #f5f5f5;
+  border-left: 1px solid #ddd;
+}
+
+.friend-list ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.friend-list li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.friend-list li:last-child {
+  border-bottom: none;
 }

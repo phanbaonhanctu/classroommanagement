@@ -22,6 +22,8 @@ link.addEventListener('click', function(event) {
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("edit_thongtindangnhap").hidden = true;
   document.getElementById("sent_message").hidden = true;
+  document.getElementById("myChart").hidden = true;
+  document.getElementById("formchatbox").hidden = true;
 });
 
 const link1 = document.getElementById('showdiemdanhlink');
@@ -33,6 +35,8 @@ link1.addEventListener('click', function(event) {
   document.getElementById("create_diemdanh").hidden = false;
   document.getElementById("edit_thongtindangnhap").hidden = true;
   document.getElementById("sent_message").hidden = true;
+  document.getElementById("myChart").hidden = false;
+  document.getElementById("formchatbox").hidden = true;
 });
 
 const link2 = document.getElementById('thongtincanhan');
@@ -44,6 +48,8 @@ link2.addEventListener('click', function(event) {
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("edit_thongtindangnhap").hidden = false;
   document.getElementById("sent_message").hidden = true;
+  document.getElementById("myChart").hidden = true;
+  document.getElementById("formchatbox").hidden = true;
   Showinfo();
 });
 
@@ -56,6 +62,22 @@ link3.addEventListener('click', function(event) {
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("edit_thongtindangnhap").hidden = true;
   document.getElementById("sent_message").hidden = false;
+  document.getElementById("myChart").hidden = true;
+  document.getElementById("formchatbox").hidden = true;
+});
+
+const link4 = document.getElementById('showchatbox');
+link4.addEventListener('click', function(event) {
+  document.getElementById("create_classroom").hidden = true;
+  document.getElementById("showdiemdanh").hidden = true;
+  document.getElementById("dashboardclassroom").hidden = true;
+  document.getElementById("xemchitiet").hidden = true;
+  document.getElementById("create_diemdanh").hidden = true;
+  document.getElementById("edit_thongtindangnhap").hidden = true;
+  document.getElementById("sent_message").hidden = true;
+  document.getElementById("myChart").hidden = true;
+  document.getElementById("formchatbox").hidden = false;
+  Danhsachlop();
 });
 
 // const link2 = document.getElementById('xemchitiet');
@@ -63,19 +85,38 @@ link3.addEventListener('click', function(event) {
 //   xemchitietdeimdanh();
 // });
 
-var cookie = document.cookie.split(";");
+let cookie = {
+  email: "",
+  id: "",
+  rule: "",
+  chat: ""
+};
+
+
+var datacookie = document.cookie.split(";");
   
-for (var i = 0; i < cookie.length; i++) {
-  var cookiee = cookie[i].trim();
-  if (cookiee.indexOf("rule=") == 0) {
-    var rule = cookiee.substring("rule=".length, cookiee.length);
+for (var i = 0; i < datacookie.length; i++) {
+  var datacookiee = datacookie[i].trim();
+  if (datacookiee.indexOf("rule=") == 0) {
+    var rule = datacookiee.substring("rule=".length, datacookiee.length);
+    cookie.rule = rule;
+  }
+  if (datacookiee.indexOf("email=") == 0) {
+    var email = datacookiee.substring("email=".length, datacookiee.length);
+    cookie.email = email;
+  }
+  if (datacookiee.indexOf("id=") == 0) {
+    var id = datacookiee.substring("id=".length, datacookiee.length);
+    cookie.id = id;
   }
 }
 
 let create_classroom;
 let create_diemdanh;
 
-if (rule == 0){
+
+
+if (cookie.rule == 0){
     create_classroom = true;
     create_diemdanh = true;
 }else if (rule == 1){
@@ -92,7 +133,7 @@ if (create_classroom == false){
 }
 
 function Showinfo(){
-  var mssv = GetID();
+  var mssv = cookie.id;
   db.collection("student").doc(mssv).get().then((doc) => {
     document.getElementById("outputMssv").value = doc.data().mssv;
     document.getElementById("outputName").value = doc.data().name;
@@ -127,7 +168,7 @@ function Saveinfo(){
   newStudent.mssv = document.getElementById("outputMssv").value;
   newStudent.name = document.getElementById("outputName").value;
   newStudent.phone = document.getElementById("outputPhone").value;
-  newStudent.rule = GetRule();
+  newStudent.rule = cookie.rule;
   newStudent.gender = document.getElementById("outputGender").value;
   newStudent.email = document.getElementById("outputEmail").value;
   newStudent.age = document.getElementById("outputDay").value;
@@ -146,40 +187,26 @@ function Saveinfo(){
 
 
 function GetID(){
-    var cookies = document.cookie.split(";");
-  
-    for (var i = 0; i < cookies.length; i++) {
-      var cookie = cookies[i].trim();
-      if (cookie.indexOf("id=") == 0) {
-        var value = cookie.substring("id=".length, cookie.length);
 
-        var testt = document.getElementById("outputID");
-        testt.value = "Mã số cán bộ của bạn là: "+value;
+        var value = cookie.id;
 
-        var test = document.getElementById("outputID2");
-        test.value = "Mã số cán bộ của bạn là: "+value;
+        // var testt = document.getElementById("outputID");
+        // testt.value = "Mã số cán bộ của bạn là: "+value;
 
-        var test1 = document.getElementById("outputID3");
-        test1.value = "Mã số cán bộ của bạn là: "+value;
-        console.log(value);
+        // var test = document.getElementById("outputID2");
+        // test.value = "Mã số cán bộ của bạn là: "+value;
+
+        // var test1 = document.getElementById("outputID3");
+        // test1.value = "Mã số cán bộ của bạn là: "+value;
         return value;
-        break;
-      }
-    }
+
   }
 
+
+
   function GetRule(){
-    var cookies = document.cookie.split(";");
-  
-    for (var i = 0; i < cookies.length; i++) {
-      var cookie = cookies[i].trim();
-      if (cookie.indexOf("rule=") == 0) {
-        var value = cookie.substring("rule=".length, cookie.length);
-        // console.log(value);
+        var value = cookie.rule;
         return value;
-        break;
-      }
-    }
   }
 
   function GetClassOfTeach(id){
@@ -192,7 +219,7 @@ function GetID(){
     while (dropdownnew.options.length > 0) {
       dropdownnew.remove(0);
     }
-    var idnew = GetID();
+    var idnew = cookie.id;
     db.collection("classroom").where("idteacher", "==", idnew)
       .get()
       .then((querySnapshot) => {
@@ -220,7 +247,7 @@ function GetID(){
     message.time = Gettime();
     message.name = document.getElementById("title_message").value;
     message.content = document.getElementById("txt_message").value;
-    message.sent_from = GetID();
+    message.sent_from = cookie.id;
     message.sent_to = document.getElementById("myDropdown1").value;
 
     SaveDatabaseRandomID("notification",message);
@@ -242,7 +269,7 @@ function GetID(){
 
       // Xử lý sự kiện ở đây
           // Lấy đối tượng select từ id của nó
-    var id = GetID();
+    var id = cookie.id;
     // Thực hiện truy vấn trong Firestore
       db.collection("classroom").where("idteacher", "==", id)
       .get()
@@ -353,7 +380,7 @@ function GetID(){
     };
 
     newClassroom.time = Gettime();
-    newClassroom.idteacher = GetID();
+    newClassroom.idteacher = cookie.id;
     newClassroom.tenlop = document.getElementById("inputClassname").value;
     for (var i = 0; i < data.length; i++) {
       let newStudent = {
@@ -417,7 +444,7 @@ function GetID(){
       return time;
     }
 
-  GetID();
+
   /////////////////////////////////////Create classroom//////////////////////////////////
 
 
@@ -676,9 +703,6 @@ function Checklogin(){
     });
 }
 
-function checkRule(email){
-
-}
 
 function RecoveryPassword(){
     var user = document.getElementById("inputEmail");
@@ -703,9 +727,7 @@ function RecoveryPassword(){
       });
       formtb.innerHTML = html;
       html = "";
-    }).catch(function(error) {
-      console.log("Lỗi khi lấy dữ liệu:", error);
-  });
+    })
   }
 
   function Delnotification(){
@@ -716,3 +738,242 @@ function RecoveryPassword(){
 GetData();
 GetDataTable();
 Notification();
+
+
+
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+      labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
+      datasets: [{
+          label: 'Doanh thu',
+          data: [1200, 1500, 800, 1000, 2000, 1800],
+          backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+      }]
+  },
+  options: {
+      scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero: true
+              }
+          }]
+      },
+      responsive: false, // thêm dòng này để tắt khả năng tương thích của biểu đồ với màn hình
+      maintainAspectRatio: false // thêm dòng này để vô hiệu hóa tỷ lệ giữa chiều rộng và chiều cao
+  }
+});
+
+const chatBox = document.getElementById('chatbox');
+
+function addMessage(message1,id) {
+  const reciveMessage = document.createElement('div');
+  reciveMessage.innerText = message1;
+  reciveMessage.classList.add('reciveMessage');
+  const max = message1.length * 11;
+  reciveMessage.style.maxWidth = max +'px';
+  chatBox.appendChild(reciveMessage);
+  cookie.chat = id;
+}
+
+function sendMessage(mess,id){
+  const sentMessage = document.createElement('div');
+  sentMessage.innerText = mess;
+  sentMessage.classList.add('sentMessage');
+  const max1 = mess.length * 11;
+  sentMessage.style.maxWidth = max1 +'px';
+  chatBox.appendChild(sentMessage);
+  cookie.chat = id;
+}
+
+var input = document.getElementById("inputChat");
+
+input.addEventListener("keydown", function(event) {
+  if (event.keyCode === 13) { // Kiểm tra xem người dùng đã nhấn phím Enter
+    event.preventDefault(); // Ngăn chặn trang web chuyển đến trang khác khi nhấn Enter
+    actionMessage();
+  }
+});
+
+
+const btnSend = document.getElementById("btnSend");
+btnSend.addEventListener("click", function(event){
+  actionMessage();
+})
+
+  function actionMessage(){
+    const inputChat = document.getElementById('inputChat').value;
+    const testvalue = document.getElementById('inputChat');
+    let newMessage = {
+      message: "",
+      sendBy: "",
+      time: ""
+    };
+  
+    newMessage.message = inputChat;
+    var now = new Date();
+    newMessage.time = now.getTime();
+    newMessage.sendBy = cookie.email;
+    SaveMessage(newMessage);
+    testvalue.value = "";
+  }
+
+function SaveMessage(mess){
+  let id = cookie.chat;
+  let collectionRef = firebase.firestore().collection("chatRoom").doc(id).collection("chats");
+  collectionRef.add(mess);
+}
+
+function ChatRoom(id){
+      var firestore = firebase.firestore();
+      var docRef2 = firestore.collection("chatRoom").doc(id).collection("chats");
+      docRef2.orderBy("time", "asc").onSnapshot((querySnapshot) => {
+        chatBox.innerHTML = "";
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+            if (data.sendBy == cookie.email){
+              sendMessage(data.message,id);
+            }else{
+              addMessage(data.message,id);
+            }
+        });
+        html = "";
+      })
+}
+
+
+
+function getChatroomId(user1,user2){
+            var firestore = firebase.firestore();
+            firestore.collection("chatRoom").where("chatRoomId", "in", [user1+"_"+user2, user2+"_"+user1])
+            .get()
+            .then((querySnapshot) => {
+              if (querySnapshot.size === 0) {
+                
+                let newChatroom = {
+                  chatRoomId: "",
+                  users: []
+                }
+                newChatroom.chatRoomId = user1+"_"+user2;
+                newChatroom.users[0] = user1;
+                newChatroom.users[1] = user2;
+
+                SaveDatabase("chatRoom",newChatroom.chatRoomId,newChatroom);
+                cookie.chat = newChatroom.chatRoomId;
+                console.log("Đã tạo chat room với id: "+cookie.chat);
+                ChatRoom(cookie.chat);
+              }
+                querySnapshot.forEach((doc) => {
+                    var id = doc.id;
+                    ChatRoom(id);
+                });
+            })
+}
+
+// ChatRoom("phanbaonhanctu@gmail.com_nhanb1805900@student.ctu.edu.vn");
+var friendList = document.getElementById("friend-list-ul");
+function Danhsachlop() {
+  friendList.innerHTML="";
+  if(cookie.rule == 0){
+    var firestore = firebase.firestore();
+            firestore.collection("classroom").where("idteacher", "==", cookie.id)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    console.log(doc.id);
+                    const data = doc.data();
+                    for(i=0;i<data.dssv.length;i++){
+                      var mssv = data.dssv[i];
+                      var docRef = firebase.firestore().collection("student").doc(mssv);
+                    docRef.get().then(function(doc1) {
+                      var data1 = doc1.data();
+                      addFriend(data1.name,data1.email);
+                    });
+                    }
+                });
+            })
+  }else if(cookie.rule == 2){
+    var firestore = firebase.firestore();
+            firestore.collection("classroom").where("dssv", "array-contains", cookie.id)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    console.log(doc.id);
+                    const data = doc.data();
+                    firebase.firestore().collection("student").doc(data.idteacher).get().then(function(doc2) {
+                      var data2 = doc2.data();
+                      addFriend(data2.name,data2.email);
+                    });
+                    for(i=0;i<data.dssv.length;i++){
+                      var mssv = data.dssv[i];
+                      var docRef = firebase.firestore().collection("student").doc(mssv);
+                    docRef.get().then(function(doc1) {
+                      var data1 = doc1.data();
+                      addFriend(data1.name,data1.email);
+                    });
+                    }
+                });
+            })
+  }
+}
+
+
+
+// Lấy tham chiếu đến danh sách bạn bè
+
+
+// Thêm bạn bè vào danh sách
+function addFriend(name,email) {
+  var li = document.createElement("li");
+  li.innerText = name;
+  li.id = email;
+  li.addEventListener('click', () => {
+    // Gọi hàm chat ở đây
+    console.log(li.id);
+    getChatroomId(cookie.email,email);
+  });
+  friendList.appendChild(li);
+}
+
+// Xóa bạn bè khỏi danh sách
+function removeFriend() {
+  var liList = friendList.getElementsByTagName("li");
+  for (var i = 0; i < liList.length; i++) {
+      friendList.removeChild(liList[i]);
+  }
+}
+
+// Sửa tên bạn bè trong danh sách
+function editFriend(oldName, newName) {
+  var liList = friendList.getElementsByTagName("li");
+  for (var i = 0; i < liList.length; i++) {
+    if (liList[i].innerText === oldName) {
+      liList[i].innerText = newName;
+      break;
+    }
+  }
+}
+
+// Sử dụng các hàm để thêm, xóa hoặc sửa đổi bạn bè trong danh sách
+// addFriend("John");
+// addFriend("Jane");
+// removeFriend("John");
+// editFriend("Jane", "Janet");
