@@ -14,6 +14,41 @@
 
 
 
+  
+let newinfoStudent = {
+  mssv: "",
+  name: "",
+  phone: "",
+  rule: "",
+  email: "",
+  gender: "",
+  age: "",
+  avarta: ""
+};
+
+ function SaveAvarta(name){
+    newinfoStudent.avarta = name;
+    console.log(newinfoStudent.avarta);
+ };
+
+
+ function uploadFile() {
+     const fileInput = document.getElementById('fileInput');
+     const file = fileInput.files[0];
+     const formData = new FormData();
+     formData.append('file', file);
+ 
+     const xhr = new XMLHttpRequest();
+     xhr.open('POST', 'upload.php');
+     xhr.onload = function() {
+     if (xhr.status === 200) {
+         console.log('Upload successful!');
+     } else {
+         console.log('Upload failed!');
+     }
+     };
+     xhr.send(formData);
+ }
 
 
 /////////////////////////////Create CLassroom/////////////////////////////////
@@ -157,6 +192,11 @@ if (create_classroom == false){
 
 function Showinfo(){
   var mssv = cookie.id;
+  let img = document.getElementById("showavarta");
+  img.src = "/dashboard/uploads/"+mssv+".jpg";
+
+
+
   db.collection("student").doc(mssv).get().then((doc) => {
     document.getElementById("outputMssv").value = doc.data().mssv;
     document.getElementById("outputName").value = doc.data().name;
@@ -167,6 +207,16 @@ function Showinfo(){
   }).catch((error) => {
     console.log("Lỗi: ", error);
   });
+
+
+  // let file_name = cookie.id;
+  // let file_path = 'dashboard/uploads/' + file_name;
+  // let file_ext = file_name.split('.').pop();
+
+  // let img = document.getElementById("showavarta");
+  // img.src = file_name + '.' + file_ext;
+  // document.body.appendChild(img);
+
 }
 
 function Editinfo(){
@@ -178,24 +228,39 @@ function Editinfo(){
     document.getElementById("outputGender").disabled = true;
 }
 
+
 function Saveinfo(){
-  let newStudent = {
-    mssv: "",
-    name: "",
-    phone: "",
-    rule: "",
-    email: "",
-    gender: "",
-    age: ""
+
+  const fileInput = document.getElementById('fileInput');
+
+  const filePath = fileInput.value;
+  const fileExtension = filePath.split('.').pop();
+  newinfoStudent.avarta = cookie.id+"."+fileExtension;
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'upload.php');
+  xhr.onload = function() {
+  if (xhr.status === 200) {
+      console.log('Upload successful!');
+  } else {
+      console.log('Upload failed!');
+  }
   };
-  newStudent.mssv = document.getElementById("outputMssv").value;
-  newStudent.name = document.getElementById("outputName").value;
-  newStudent.phone = document.getElementById("outputPhone").value;
-  newStudent.rule = cookie.rule;
-  newStudent.gender = document.getElementById("outputGender").value;
-  newStudent.email = document.getElementById("outputEmail").value;
-  newStudent.age = document.getElementById("outputDay").value;
-  SaveDatabase("student",newStudent.mssv,newStudent);
+  xhr.send(formData);
+
+
+
+  newinfoStudent.mssv = document.getElementById("outputMssv").value;
+  newinfoStudent.name = document.getElementById("outputName").value;
+  newinfoStudent.phone = document.getElementById("outputPhone").value;
+  newinfoStudent.rule = cookie.rule;
+  newinfoStudent.gender = document.getElementById("outputGender").value;
+  newinfoStudent.email = document.getElementById("outputEmail").value;
+  newinfoStudent.age = document.getElementById("outputDay").value;
+  SaveDatabase("student",newinfoStudent.mssv,newinfoStudent);
   alert("Lưu thành công");
 
   document.getElementById("outputMssv").disabled = true;
@@ -257,6 +322,7 @@ function GetID(){
 
       })
   })
+ 
 
   function SentMessage(){
     let message = {
@@ -456,8 +522,8 @@ function GetID(){
     function SaveDatabaseRandomID (col,data){
       const collectionRef = firebase.firestore().collection(col);
       collectionRef.add(data);
-  
     }
+
     function Gettime(){
       const now = new Date();
       const year = now.getFullYear();
@@ -829,6 +895,11 @@ function RecoveryPassword(){
     });
 }
 
+  let thonbao = {
+    avarta: "",
+    content: ""
+  };
+  getavarta(cookie.id);
   function Notification(){
     const formtb = document.getElementById("notification");
     let html = '';
@@ -837,16 +908,63 @@ function RecoveryPassword(){
       Delnotification();
       querySnapshot.forEach((doc) => {
         var thongbao = doc.data();
-        html += '<li class="header_notify-item">'+'<h5>'+thongbao.name+'</h5><h6>'+thongbao.time+'</h6></li>';
+        thonbao.content = thongbao.content;
+        html += '<li class="header_notify-item" id="'+doc.id+'">'+'<img src="/dashboard/uploads/'+thonbao.avarta+'" alt="" width="30px" height="30px"><p onclick="Showthongbaonoi()">&nbsp;'+thongbao.name+'</p></li>';
       });
       formtb.innerHTML = html;
       html = "";
     })
   }
 
+  function getavarta(id){
+    var docRef = firebase.firestore().collection("student").doc(id);
+    docRef.get().then(function(doc) {
+    var data = doc.data();
+    thonbao.avarta = data.avarta;
+    })
+  }
+
   function Delnotification(){
     const del = document.getElementById('notification');
     del.innerHTML = '';
+  }
+
+  function Showthongbaonoi(){
+    const myList = document.getElementById('notification');
+    const items = myList.getElementsByTagName('li');
+    // Bắt sự kiện click cho từng phần tử li
+    for (let i = 0; i < items.length; i++) {
+      items[i].addEventListener('click', function() {
+        // Lấy id của phần tử li được click
+        const itemId = this.id;
+        var docRef = firebase.firestore().collection("notification").doc(itemId);
+        docRef.get().then(function(doc) {
+          console.log(doc.data().name);
+      // Tạo phần tử div để chứa bảng thông báo
+      var popup = document.createElement('div');
+
+      // Thêm nội dung cho bảng thông báo
+      var html = "<div>Nội dung: "+doc.data().content+"</div><div>Thông báo lúc: "+doc.data().time+"</div>";
+      popup.innerHTML = html;
+ 
+      // Thêm nút "OK" vào bảng thông báo
+      var okButton = document.createElement('button');
+      okButton.innerHTML = 'Đóng thông báo';
+      popup.appendChild(okButton);
+
+      // Thêm lớp CSS cho bảng thông báo
+      popup.classList.add('popup');
+
+      // Thêm bảng thông báo vào trang web
+      document.body.appendChild(popup);
+
+      // Xử lý sự kiện click cho nút "OK"
+      okButton.addEventListener('click', function() {
+        popup.remove(); // Xóa bảng thông báo khỏi trang web
+      });
+        })
+      });
+    }
   }
 
 GetData();
@@ -1003,7 +1121,7 @@ function getChatroomId(user1,user2){
 }
 
 // ChatRoom("phanbaonhanctu@gmail.com_nhanb1805900@student.ctu.edu.vn");
-var friendList = document.getElementById("friend-list-ul");
+
 function Danhsachlop() {
   friendList.innerHTML="";
   if(cookie.rule == 0){
@@ -1017,7 +1135,7 @@ function Danhsachlop() {
                     for(i=0;i<data.dssv.length;i++){
                       var mssv = data.dssv[i];
                       var docRef = firebase.firestore().collection("student").doc(mssv);
-                    docRef.get().then(function(doc1) {
+                      docRef.get().then(function(doc1) {
                       var data1 = doc1.data();
                       addFriend(data1.name,data1.email);
                     });
@@ -1049,31 +1167,34 @@ function Danhsachlop() {
   }
 }
 
-
+var friendList = document.getElementById("friend-list-ul");
 
 // Lấy tham chiếu đến danh sách bạn bè
 
 
 // Thêm bạn bè vào danh sách
 function addFriend(name,email) {
-  var li = document.createElement("li");
-  li.innerText = name;
-  li.id = email;
-  li.addEventListener('click', () => {
-    // Gọi hàm chat ở đây
-    console.log(li.id);
-    getChatroomId(cookie.email,email);
-  });
-  friendList.appendChild(li);
+    var li = document.createElement("li");
+    li.innerText = name;
+    li.id = email;
+    li.addEventListener('click', () => {
+      // Gọi hàm chat ở đây
+      // console.log(li.id);
+      getChatroomId(cookie.email,email);
+    });
+    friendList.appendChild(li);
 }
 
 // Xóa bạn bè khỏi danh sách
 function removeFriend() {
   var liList = friendList.getElementsByTagName("li");
   for (var i = 0; i < liList.length; i++) {
-      friendList.removeChild(liList[i]);
+    console.log(liList.length);
+      // friendList.removeChild(liList[i]);
   }
 }
+
+
 
 // Sửa tên bạn bè trong danh sách
 function editFriend(oldName, newName) {
@@ -1090,4 +1211,4 @@ function editFriend(oldName, newName) {
 // addFriend("John");
 // addFriend("Jane");
 // removeFriend("John");
-// editFriend("Jane", "Janet");
+editFriend("Test Teacher", "Test Teacher2");

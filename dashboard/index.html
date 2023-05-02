@@ -146,6 +146,15 @@
                                         <input class="form-control" id="outputGender" disabled/>
                                         <label for="outputGender">Giới tính</label>
                                     </div>
+                                    <!--- BEGIN FORM UPLOAD FILES --->
+                                    <!-- Form upload file -->
+                                        <form>
+                                            <input type="file" id="fileInput" title="Chọn file">
+                                            <img src="" alt="" id="showavarta" height="100" width="100">
+                                            <!-- <button type="button" onclick="uploadFile()">Upload</button> -->
+                                        </form>  
+                                        
+									<!--- END FORM UPLOAD FILES --->
                                     <div class="mt-4 mb-0">
                                         <div class="d-grid"><a class="btn btn-primary btn-block" onclick="Editinfo()">Chỉnh sửa</a></div><br>
                                         <div class="d-grid"><a class="btn btn-primary btn-block" onclick="Saveinfo()">Lưu lại</a></div>
@@ -172,7 +181,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-
                             </div>
                             <!-- Xóa lớp học -->
                             <div id="xoalophoc" hidden>
@@ -347,11 +355,10 @@
                             </div>
                             <!-- Gửi thông báo -->
                         <div id="sent_message" hidden class="card mb-4">
-                            <br>
                                 <div class="card-header">
                                     <i class="fas fa-table me-1"></i>
                                    Gửi thông báo
-                                </div><br>                            
+                                </div>                          
                             <div class="form-floating mb-3">
                                 <input class="form-control" id="title_message" type="text" placeholder="Vui lòng nhập tên thông báo" />
                                 <label for="title_message">Vui lòng nhập tên thông báo</label>
@@ -360,7 +367,7 @@
                                 <input class="form-control" id="outputID3" type="text" disabled/>
                             </div> -->
                                 <div>
-                                    <label for="myDropdown1">Vui lòng chọn lớp học cần gửi thông báo:</label>
+                                    <label for="myDropdown1" style="margin: 10px 10px 10px 10px;">Vui lòng chọn lớp học cần gửi thông báo:</label>
                                         <select id="myDropdown1">
                                         <!-- <option value="value1">Option 1</option>
                                         <option value="value2">Option 2</option>
@@ -369,7 +376,7 @@
                                     <br>
                                     <div class="card-body">
                                         <!-- Text -->
-                                                 <textarea name="message" id="txt_message" cols="185" rows="10"></textarea>                      
+                                                 <textarea name="message" id="txt_message" cols="120" rows="10"></textarea>                      
                                     </div>
                                     <br>
                                     <a class="btn btn-primary2" onclick="SentMessage()">Gửi thông báo</a>

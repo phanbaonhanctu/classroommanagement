@@ -11273,6 +11273,7 @@ body {
   cursor: pointer;
 }
 
+
 .notify:hover .header_notify{
   display: block;
 }
@@ -11283,7 +11284,7 @@ body {
   right: 0px;
   border: 1px solid #000;
   width: 404px;
-  background-color: #0dcaf0;
+  background-color: #564257;
   animation: headerNotify ease-in 0.25s;
   display: none;
 }
@@ -11313,11 +11314,26 @@ body {
 
 .header_notify-list {
   padding-left: 0;
+
 }
 
 .header_notify-item{
- font-size: large;
+ display: flex;
+ align-items: center;
+ background-color: #e0c3e0;
+ border-top: 5px;
+ color: #000;
+ border: 1px solid;
 }
+
+.header_notify-item img{
+  margin-left: 10px;
+ }
+
+ .header_notify-item p{
+  margin-left: 10px;
+  margin-top: 5px;
+ }
 
 
 /* config chat box */
@@ -11387,19 +11403,52 @@ body {
   height: 100%;
   background-color: #f5f5f5;
   border-left: 1px solid #ddd;
+  overflow-y: scroll;
 }
 
 .friend-list ul {
   padding: 0;
   margin: 0;
   list-style: none;
+  background-color: #f0faf5;
 }
 
 .friend-list li {
   padding: 10px;
   border-bottom: 1px solid #ddd;
+  background-color: #d0f2e0;
+}
+
+.friend-list li:hover {
+    background-color: #34eb89;
+    cursor: pointer;
 }
 
 .friend-list li:last-child {
   border-bottom: none;
 }
+
+.popup {
+  width: 500px;
+  padding: 20px;
+  background: rgb(255, 255, 255);
+  /* display: flex; */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  color: #000;
+  font-size: 20px;
+  align-content: center;
+}
+
+.popup button{
+  background-color: #a1d6cb;
+  height: 40px;
+  width: auto;
+  border-radius: 5px;
+  margin-left: 30%;
+}
+
+
