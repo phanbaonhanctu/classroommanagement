@@ -12,6 +12,10 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
+
+
+
+
 /////////////////////////////Create CLassroom/////////////////////////////////
 const link = document.getElementById('showclassroom');
 link.addEventListener('click', function(event) {
@@ -24,6 +28,7 @@ link.addEventListener('click', function(event) {
   document.getElementById("sent_message").hidden = true;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
+  document.getElementById("xoalophoc").hidden = true;
 });
 
 const link1 = document.getElementById('showdiemdanhlink');
@@ -37,6 +42,7 @@ link1.addEventListener('click', function(event) {
   document.getElementById("sent_message").hidden = true;
   document.getElementById("myChart").hidden = false;
   document.getElementById("formchatbox").hidden = true;
+  document.getElementById("xoalophoc").hidden = true;
 });
 
 const link2 = document.getElementById('thongtincanhan');
@@ -50,6 +56,7 @@ link2.addEventListener('click', function(event) {
   document.getElementById("sent_message").hidden = true;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
+  document.getElementById("xoalophoc").hidden = true;
   Showinfo();
 });
 
@@ -64,6 +71,7 @@ link3.addEventListener('click', function(event) {
   document.getElementById("sent_message").hidden = false;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
+  document.getElementById("xoalophoc").hidden = true;
 });
 
 const link4 = document.getElementById('showchatbox');
@@ -77,7 +85,23 @@ link4.addEventListener('click', function(event) {
   document.getElementById("sent_message").hidden = true;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = false;
+  document.getElementById("xoalophoc").hidden = true;
   Danhsachlop();
+});
+
+const link5 = document.getElementById('dellassroom');
+link5.addEventListener('click', function(event) {
+  document.getElementById("create_classroom").hidden = true;
+  document.getElementById("showdiemdanh").hidden = true;
+  document.getElementById("dashboardclassroom").hidden = true;
+  document.getElementById("xemchitiet").hidden = true;
+  document.getElementById("create_diemdanh").hidden = true;
+  document.getElementById("edit_thongtindangnhap").hidden = true;
+  document.getElementById("sent_message").hidden = true;
+  document.getElementById("myChart").hidden = true;
+  document.getElementById("formchatbox").hidden = true;
+  document.getElementById("xoalophoc").hidden = false;
+  GetData2();
 });
 
 // const link2 = document.getElementById('xemchitiet');
@@ -112,24 +136,23 @@ for (var i = 0; i < datacookie.length; i++) {
 }
 
 let create_classroom;
-let create_diemdanh;
+let delete_classroom;
 
 
 
 if (cookie.rule == 0){
     create_classroom = true;
-    create_diemdanh = true;
-}else if (rule == 1){
+    delete_classroom = true;
+}else{
     create_classroom = false;
-    create_diemdanh = true;
-}else {
-    create_classroom = false;
-    create_diemdanh = false;
+    delete_classroom = false;
 }
 
 if (create_classroom == false){
   var notification = document.getElementById("create_classroom");
   notification.innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+  var notification2 = document.getElementById("xoalophoc");
+  notification2.innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
 }
 
 function Showinfo(){
@@ -451,8 +474,8 @@ function GetID(){
 
       // Get data from Firestore
 function GetData(){
-    
-    db.collection("classroom").onSnapshot((querySnapshot) => {
+  if (cookie.rule == 0){
+    db.collection("classroom").where("idteacher","==",cookie.id).onSnapshot((querySnapshot) => {
       ClearTable();
         const tableBody = $("#my-table tbody");
         querySnapshot.forEach((doc) => {
@@ -473,7 +496,87 @@ function GetData(){
         $("#my-table").tablesorter();
  //       setTimeout(GetData, 1000);
       });
+  }else{
+    db.collection("classroom").where("dssv", "array-contains", cookie.id).onSnapshot((querySnapshot) => {
+      ClearTable();
+        const tableBody = $("#my-table tbody");
+        querySnapshot.forEach((doc) => {
+        const book = doc.data();
+        const timestamp = book.time;
+
+          const row = `
+            <tr>
+              <td>${book.tenlop}</td>
+              <td>${book.idteacher}</td>
+              <td>${book.dssv}</td>
+              <td>${timestamp}</td>
+            </tr>
+          `;
+          tableBody.append(row);
+        });
+        // Initialize tablesorter
+        $("#my-table").tablesorter();
+ //       setTimeout(GetData, 1000);
+      });
+  }
+
 }
+
+function GetData2(){
+    db.collection("classroom").where("idteacher","==",cookie.id).onSnapshot((querySnapshot) => {
+      ClearTable2();
+        const tableBody = $("#my-table2 tbody");
+        querySnapshot.forEach((doc) => {
+        const book = doc.data();
+        const timestamp = book.time;
+          const row = `
+            <tr>
+              <td>${book.tenlop}</td>
+              <td>${doc.id}</td>
+              <td>${book.dssv}</td>
+              <td>${timestamp}</td>
+              <td><input type="checkbox" class="checkbox"></td>
+            </tr>
+          `;
+          tableBody.append(row);
+        });
+        // Initialize tablesorter
+        $("#my-table2").tablesorter();
+      });
+}
+
+function DeleteClassroom(id){
+            // Lấy tất cả các ô kiểm tra
+            var checkboxes = document.getElementsByClassName("checkbox");
+    
+            // Lưu trữ các hàng được chọn
+            var selectedRows = [];
+          
+            // Duyệt qua tất cả các ô kiểm tra và kiểm tra xem các ô kiểm tra nào được chọn
+            for (var i = 0; i < checkboxes.length; i++) {
+              if (checkboxes[i].checked) {
+                // Lấy hàng tương ứng với ô kiểm tra được chọn
+                var selectedRow = checkboxes[i].parentNode.parentNode;
+          
+                // Lưu trữ hàng được chọn
+                selectedRows.push(selectedRow);
+              }
+            }
+          
+            // Lấy dữ liệu từ các hàng được chọn
+            for (var j = 0; j < selectedRows.length; j++) {
+              var id = selectedRows[j].cells[1].textContent;
+              // Get a reference to the document to be deleted
+              db.collection("classroom").doc(id).delete().then(function() {
+                  console.log("Document successfully deleted!");
+              }).catch(function(error) {
+                  console.error("Error removing document: ", error);
+              });
+            }
+            
+}
+
+
 
 function GetDataTable(){
   db.collection("diemdanh").onSnapshot((querySnapshot) => {
@@ -579,6 +682,17 @@ function ClearTable(){
       table.deleteRow(1);
     }
     
+}
+
+function ClearTable2(){
+  const table = document.getElementById("my-table2");
+  const rows = table.getElementsByTagName("tr");
+  
+  // Lặp qua từng dòng và xóa chúng
+  while (rows.length > 1) {
+    table.deleteRow(1);
+  }
+  
 }
 
 function ClearTableDiemdanh(){
@@ -885,7 +999,7 @@ function getChatroomId(user1,user2){
                     var id = doc.id;
                     ChatRoom(id);
                 });
-            })
+  })
 }
 
 // ChatRoom("phanbaonhanctu@gmail.com_nhanb1805900@student.ctu.edu.vn");
