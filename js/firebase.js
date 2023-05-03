@@ -64,6 +64,7 @@ link.addEventListener('click', function(event) {
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
+  document.getElementById("xoasv").hidden = true;
 });
 
 const link1 = document.getElementById('showdiemdanhlink');
@@ -78,6 +79,7 @@ link1.addEventListener('click', function(event) {
   document.getElementById("myChart").hidden = false;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
+  document.getElementById("xoasv").hidden = true;
 });
 
 const link2 = document.getElementById('thongtincanhan');
@@ -92,6 +94,7 @@ link2.addEventListener('click', function(event) {
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
+  document.getElementById("xoasv").hidden = true;
   Showinfo();
 });
 
@@ -108,6 +111,7 @@ link3.addEventListener('click', function(event) {
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
   document.getElementById("choncansu").hidden = true;
+  document.getElementById("xoasv").hidden = true;
 });
 
 const link4 = document.getElementById('showchatbox');
@@ -123,6 +127,7 @@ link4.addEventListener('click', function(event) {
   document.getElementById("formchatbox").hidden = false;
   document.getElementById("xoalophoc").hidden = true;
   document.getElementById("choncansu").hidden = true;
+  document.getElementById("xoasv").hidden = true;
   Danhsachlop();
 });
 
@@ -139,6 +144,7 @@ link5.addEventListener('click', function(event) {
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = false;
   document.getElementById("choncansu").hidden = true;
+  document.getElementById("xoasv").hidden = true;
   GetData2();
 });
 
@@ -155,7 +161,25 @@ link6.addEventListener('click', function(event) {
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
   document.getElementById("choncansu").hidden = false;
-  danhsachlophoc("danhsachlophoc");
+  document.getElementById("xoasv").hidden = true;
+  danhsachlophoc("danhsachlophoc","table-cansu");
+});
+
+const link7 = document.getElementById('xoasinhvien');
+link7.addEventListener('click', function(event) {
+  document.getElementById("create_classroom").hidden = true;
+  document.getElementById("showdiemdanh").hidden = true;
+  document.getElementById("dashboardclassroom").hidden = true;
+  document.getElementById("xemchitiet").hidden = true;
+  document.getElementById("create_diemdanh").hidden = true;
+  document.getElementById("edit_thongtindangnhap").hidden = true;
+  document.getElementById("sent_message").hidden = true;
+  document.getElementById("myChart").hidden = true;
+  document.getElementById("formchatbox").hidden = true;
+  document.getElementById("xoalophoc").hidden = true;
+  document.getElementById("choncansu").hidden = true;
+  document.getElementById("xoasv").hidden = false;
+  danhsachlophoc("danhsachlophoc2","table-xoasv");
 });
 
 // const link2 = document.getElementById('xemchitiet');
@@ -288,6 +312,11 @@ function Saveinfo(){
   document.getElementById("outputDay").disabled = true;
   document.getElementById("outputPhone").disabled = true;
   document.getElementById("outputGender").disabled = true;
+
+  document.getElementById("edit_thongtindangnhap").hidden = true;
+
+  document.getElementById("edit_thongtindangnhap").hidden = false;
+
 }
 
 
@@ -342,23 +371,61 @@ function GetID(){
       })
   })
 
-  function danhsachlophoc(selectedID){
+  function danhsachlophoc(selectedID,table){
     var dropdownnew = document.getElementById(selectedID);
     while (dropdownnew.options.length > 1) {
       dropdownnew.remove(1);
     }
+    var selectElement = document.getElementById(selectedID);
     db.collection("classroom").where("idteacher", "==", cookie.id)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          var selectElementnew = document.getElementById(selectedID);
           var newOptionnew = document.createElement("option");
           newOptionnew.value = doc.id;
           newOptionnew.text = doc.data().tenlop;
           // Thêm option mới vào select
-          selectElementnew.add(newOptionnew);
+          selectElement.add(newOptionnew);
         })
       })
+      selectElement.onchange = function() {
+        // alert(selectElement.value);
+        CLearTablename(table);
+          // Lấy giá trị của tùy chọn được chọn
+          db.collection("classroom").doc(selectElement.value)
+          .get()
+          .then(function(doc) {
+            for (var mssv of doc.data().dssv) {
+              // Lấy tham chiếu đến document có id là "abc123" trong collection "myCollection"
+              var docRef = firebase.firestore().collection("student").doc(mssv);
+              // Lấy dữ liệu của document và xử lý kết quả
+              docRef.get().then(function(doc2) {
+                const tableBody = $("#"+table+" tbody");
+                var data = doc2.data();
+                var vaitro = data.rule;
+
+                if (data.rule == 1){
+                    vaitro = "<p style='color: darkblue;'>Cán sự</p>";
+                }else{
+                    vaitro = "Sinh viên";
+                }
+                      const row = `
+                      <tr>
+                        <td>${data.mssv}</td>
+                        <td>${data.name}</td>
+                        <td>${data.email}</td>
+                        <td>${data.gender}</td>
+                        <td>${data.phone}</td>
+                        <td>${vaitro}</td>
+                        <td><input type="checkbox" class="checkbox"></td>
+                      </tr>
+                    `;
+                    tableBody.append(row);
+              });
+              $("#"+table).tablesorter();
+          };
+          });
+        };
   }
 
   
@@ -400,8 +467,10 @@ function GetID(){
     message.sent_to = document.getElementById("myDropdown1").value;
 
     SaveDatabaseRandomID("notification",message);
-    alert("Luu thông báo thành công");
+    alert("Lưu thông báo thành công");
   }
+
+
 
 
   var myButton = document.getElementById("inputdiemdanhname");
@@ -452,7 +521,7 @@ function GetID(){
                           <td>${data.mssv}</td>
                           <td>${data.name}</td>
                           <td>${data.gender}</td>
-                          <td><input type="checkbox" class="checkbox"</td>
+                          <td><input type="checkbox" class="checkbox"></td>
                         </tr>
                       `;
                       tableBody.append(row);
@@ -467,6 +536,79 @@ function GetID(){
       });
     });
 
+
+
+
+    var listsv = [];
+    var listsvuncheck = [];
+    function DeleteStudent(){
+      GetSvSelected();
+      DeleteSV(listsvuncheck);
+    }
+
+  function UpdateStudent(){
+    GetSvSelected();
+    UpdateRule(listsv,listsvuncheck);
+  }
+
+  function UpdateRule(list,list2){
+    for (i=0;i<list.length;i++){
+    var docRef = db.collection("student").doc(list[i]);
+    // Cập nhật trường "name" thành "Peter"
+    docRef.update({
+        rule: "1"
+    })}
+    for (i=0;i<list2.length;i++){
+      var docRef = db.collection("student").doc(list2[i]);
+      // Cập nhật trường "name" thành "Peter"
+      docRef.update({
+          rule: "2"
+      })
+      }
+      alert("Cập nhật thành công!");
+  }
+
+  function DeleteSV(list){
+    var selectElement = document.getElementById("danhsachlophoc2").value;
+    var docRef = db.collection("classroom").doc(selectElement);
+    docRef.update(
+      {
+        dssv: list
+      }
+    )
+    alert("Xóa thành công!");
+  }
+
+  function GetSvSelected(){
+                    // Lấy tất cả các ô kiểm tra
+                    var checkboxes = document.getElementsByClassName("checkbox");
+    
+                    // Lưu trữ các hàng được chọn
+                    var selectedRows = [];
+                    var unselectedRows = [];
+                    // Duyệt qua tất cả các ô kiểm tra và kiểm tra xem các ô kiểm tra nào được chọn
+                    for (var i = 0; i < checkboxes.length; i++) {
+                      if (checkboxes[i].checked) {
+                        // Lấy hàng tương ứng với ô kiểm tra được chọn
+                        var selectedRow = checkboxes[i].parentNode.parentNode;
+                        // Lưu trữ hàng được chọn
+                        selectedRows.push(selectedRow);
+                      }else{
+                        var selectedRow = checkboxes[i].parentNode.parentNode;
+                        unselectedRows.push(selectedRow);
+                      }
+                    }
+                  
+                    // Lấy dữ liệu từ các hàng được chọn
+                    for (var j = 0; j < selectedRows.length; j++) {
+                      var masv = selectedRows[j].cells[0].textContent;
+                      listsv.push(masv);
+                    }
+                    for (var j = 0; j < unselectedRows.length; j++) {
+                      var masv = unselectedRows[j].cells[0].textContent;
+                      listsvuncheck.push(masv);
+                    }
+  }
 
     
 
@@ -508,6 +650,8 @@ function GetID(){
             };
             SaveDatabaseRandomID("diemdanh",newdiemdanh);
             alert("Tạo hoạt động điểm danh thành công");
+            document.getElementById("inputdiemdanhname").value = "";
+            document.getElementById("inputdiadiem").value = "";
   }
 
   function readFile() {
@@ -580,9 +724,14 @@ function GetID(){
         }
       }
         SaveDatabase("student",newStudent.mssv,newStudent);
-    } alert("Tạo lớp học thành công. Tài khoản mặc định cho sinh viên là email với mật khẩu 123456");
+    }
     SaveDatabaseRandomID("classroom",newClassroom);
-  }
+    alert("Tạo lớp học thành công. Tài khoản mặc định cho sinh viên là email với mật khẩu 123456");
+    document.getElementById("inputClassname").value = "";
+    document.getElementById("inputClasscontent").value = "";
+    document.getElementById("create_classroom").hidden = true;
+    document.getElementById("dashboardclassroom").hidden = false;
+    }
   
     function SaveDatabase (col,doc,data){
       const collectionRef = firebase.firestore().collection(col);
@@ -738,8 +887,9 @@ function GetDataTable(){
             <td>${stt}</td>
             <td>${bookk.name}</td>
             <td>${timestamp}</td>
+            <td>${bookk.diadiem}</td>
             <td>${bookk.listsv.length}</td>
-            <td id="${doc.id}" onclick="xemdiemdanh('${doc.id}')" >Click here</td>
+            <td id="${doc.id}" onclick="xemdiemdanh('${doc.id}','${bookk.name}','${timestamp}','${bookk.diadiem}')" >Click here</td>
           </tr>
         `;
         tableBody.append(row);
@@ -796,7 +946,7 @@ function GetDataTable(){
 
 
 
-  function xemdiemdanh(msg){
+  function xemdiemdanh(id,ten,time,diadiem){
     ClearTableChitiet();
   document.getElementById("create_classroom").hidden = true;
   document.getElementById("showdiemdanh").hidden = true;
@@ -804,7 +954,7 @@ function GetDataTable(){
   document.getElementById("xemchitiet").hidden = false;
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("myChart").hidden = true;
-  let id = msg;
+  document.getElementById("infodiemdanh").innerHTML = "Hoạt động: "+ten+" - Diễn ra vào lúc: "+time+" - Tại: "+diadiem+"            Với danh sách sinh viên tham gia bên dưới";
     db.collection("diemdanh").doc(id).get().then((doc) => {
       if (doc.exists) {
         var name = doc.data().listsv;
@@ -831,12 +981,14 @@ var studentRef = db.collection("student").doc(mssv);
 studentRef.get().then(function(doc) {
     if (doc.exists) {
         // Lấy thông tin họ tên của sinh viên từ dữ liệu của document
-       var studentName = doc.data().name;
-        console.log(studentName);
+       var student = doc.data();
         const row = `
           <tr>
             <td>${mssv}</td>
-            <td>${studentName}</td>
+            <td>${student.name}</td>
+            <td>${student.gender}</td>
+            <td>${student.email}</td>
+            <td>${student.phone}</td>
           </tr>
         `;
         tableBody.append(row);
@@ -845,7 +997,6 @@ studentRef.get().then(function(doc) {
     }
 }).catch(function(error) {
     console.log("Lỗi khi lấy dữ liệu:", error);
-
 });
 $("#diemdanh").tablesorter();
 

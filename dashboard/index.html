@@ -211,9 +211,46 @@
                             </div>
                             <!-- Kết thúc xóa lớp học -->
                             <!-- Chọn cán sự -->
-                            <div id="choncansu">
+                            <div id="choncansu" hidden>
                                 <label for="danhsachlophoc" style="margin: 10px 10px 10px 10px;">Vui lòng chọn lớp học sẽ được chọn ban cán sự:</label>
                                 <select id="danhsachlophoc">
+                                    <option value="null">Vui lòng chọn lớp học</option>
+                                <!-- <option value="value1">Option 1</option>
+                                <option value="value2">Option 2</option>
+                                <option value="value3">Option 3</option> -->
+                                </select>
+                                
+                                </br>
+                                <div class="card-header">
+                                    <i class="fas fa-table me-1"></i>
+                                    Danh sách sinh viên
+                                </div>
+                                
+                                <div class="card-body">
+                                    <!-- Bảng HTML -->
+                                    <table id="table-cansu">
+                                        <thead>
+                                        <tr>
+                                            <th>Mã số sinh viên</th>
+                                            <th>Họ tên sinh viên</th>
+                                            <th>Email</th>
+                                            <th>Giới tính</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Vai trò</th>
+                                            <th>Lựa chọn</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <a class="btn btn-primary2" onclick="UpdateStudent()">Cập nhật cán sự</a>
+                            </div>
+                            <!-- Kết thúc chọn cán sự -->
+                            <!-- Xóa sinh viên -->
+                            <div id="xoasv" hidden>
+                                <label for="danhsachlophoc2" style="margin: 10px 10px 10px 10px;">Vui lòng chọn lớp học sẽ được chọn ban cán sự:</label>
+                                <select id="danhsachlophoc2">
                                     <option value="null">Vui lòng chọn lớp học</option>
                                 <!-- <option value="value1">Option 1</option>
                                 <option value="value2">Option 2</option>
@@ -224,16 +261,18 @@
                                     <i class="fas fa-table me-1"></i>
                                     Danh sách sinh viên
                                 </div>
+                                
                                 <div class="card-body">
                                     <!-- Bảng HTML -->
-                                    <table id="table-cansu">
+                                    <table id="table-xoasv">
                                         <thead>
                                         <tr>
-                                            <th>Tên lớp</th>
-                                            <th>Mã số cán bộ</th>
-                                            <th>Mô tả</th>
-                                            <th>Sinh viên</th>
-                                            <th>Thời gian</th>
+                                            <th>Mã số sinh viên</th>
+                                            <th>Họ tên sinh viên</th>
+                                            <th>Email</th>
+                                            <th>Giới tính</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Vai trò</th>
                                             <th>Lựa chọn</th>
                                         </tr>
                                         </thead>
@@ -241,8 +280,9 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <a class="btn btn-primary2" onclick="DeleteStudent()">Xóa sinh viên</a>
                             </div>
-                            <!-- Kết thúc chọn cán sự -->
+                            <!-- Xóa sinh viên -->
                             <!--Create Classroom-->
                             <div id="create_classroom" hidden>
                                 <div class="form-floating mb-3">
@@ -299,6 +339,7 @@
                                             <th>STT</th>
                                             <th>Tên hoạt động</th>
                                             <th>Thời gian</th>
+                                            <th>Địa điểm</th>
                                             <th>Số lượng sinh viên</th>
                                             <th>Link xem chi tiết</th>
                                           </tr>
@@ -311,7 +352,7 @@
                         <div class="card mb-4" id="xemchitiet" hidden>
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Chi tiết điểm danh
+                                <div id="infodiemdanh"></div>
                             </div>
                             <div class="card-body">
                                 <table id="diemdanhchitiet">
@@ -319,6 +360,9 @@
                                       <tr>
                                         <th>MSSV</th>
                                         <th>Họ tên</th>
+                                        <th>Giới tính</th>
+                                        <th>Email</th>
+                                        <th>Sđt</th>
                                       </tr>
                                     </thead>
                                     <tbody>
