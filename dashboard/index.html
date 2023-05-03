@@ -38,6 +38,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a id="thongtincanhan" class="dropdown-item" href="#">Thông tin cá nhân</a></li>
                         <li><a class="dropdown-item" onclick="DelCookie()" href="/login/login.html">Logout</a></li>
                     </ul>
                 </li>
@@ -62,16 +63,16 @@
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                Quản lý tài khoản
+                                Quản lý sinh viên
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                        Thông tin đăng nhập
+                                    <a id="selectcansu" class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
+                                        Chọn cán sự
                                     </a>
-                                    <a id="thongtincanhan" class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-                                        Thông tin cá nhân   
+                                    <a id="xoasinhvien" class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                        Xóa sinh viên
                                     </a>
                                     <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                 </nav>
@@ -171,10 +172,11 @@
                                     <table id="my-table">
                                         <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Teacher</th>
-                                            <th>Student</th>
-                                            <th>Time Create</th>
+                                            <th>Tên lớp</th>
+                                            <th>Mã số cán bộ</th>
+                                            <th>Mô tả</th>
+                                            <th>Sinh viên</th>
+                                            <th>Thời gian</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -206,14 +208,50 @@
                                     </table><br>
                                     <a class="btn btn-primary2" onclick="DeleteClassroom()">Xóa lớp học đã chọn</a>
                                 </div>
-
                             </div>
                             <!-- Kết thúc xóa lớp học -->
+                            <!-- Chọn cán sự -->
+                            <div id="choncansu">
+                                <label for="danhsachlophoc" style="margin: 10px 10px 10px 10px;">Vui lòng chọn lớp học sẽ được chọn ban cán sự:</label>
+                                <select id="danhsachlophoc">
+                                    <option value="null">Vui lòng chọn lớp học</option>
+                                <!-- <option value="value1">Option 1</option>
+                                <option value="value2">Option 2</option>
+                                <option value="value3">Option 3</option> -->
+                                </select>
+                                </br>
+                                <div class="card-header">
+                                    <i class="fas fa-table me-1"></i>
+                                    Danh sách sinh viên
+                                </div>
+                                <div class="card-body">
+                                    <!-- Bảng HTML -->
+                                    <table id="table-cansu">
+                                        <thead>
+                                        <tr>
+                                            <th>Tên lớp</th>
+                                            <th>Mã số cán bộ</th>
+                                            <th>Mô tả</th>
+                                            <th>Sinh viên</th>
+                                            <th>Thời gian</th>
+                                            <th>Lựa chọn</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Kết thúc chọn cán sự -->
                             <!--Create Classroom-->
                             <div id="create_classroom" hidden>
                                 <div class="form-floating mb-3">
                                     <input class="form-control" id="inputClassname" type="text" placeholder="Vui lòng nhập tên lớp học" />
                                     <label for="inputClassname">Vui lòng nhập tên lớp học</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input class="form-control" id="inputClasscontent" type="text" placeholder="Vui lòng nhập mô tả lớp học" />
+                                    <label for="inputClasscontent">Vui lòng nhập mô tả lớp học</label>
                                 </div>
                                 <!-- <div class="form-floating mb-3">
                                     <input class="form-control" id="outputID" type="text" disabled/>
@@ -224,7 +262,6 @@
                                         <a class="btn btn-primary2" onclick="readFile()">Tạo lớp học</a>
                                     </div>
                                 </div>
-                                
                             </div>
                           <!-- Show điểm danh -->
                             <style>
@@ -258,7 +295,6 @@
                                 </div>
                                 <div class="card-body">
                                     <table id="diemdanh">
-                                        <thead>
                                           <tr>
                                             <th>STT</th>
                                             <th>Tên hoạt động</th>
@@ -266,15 +302,11 @@
                                             <th>Số lượng sinh viên</th>
                                             <th>Link xem chi tiết</th>
                                           </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
-                        
-                        <canvas id="myChart" style="width: 1300px; height: 500px;" hidden></canvas>
+                        <canvas id="myChart" style="width: 1000px; height: 500px;" hidden></canvas>
                         <!-- Xem chi tiết điểm danh -->
                         <div class="card mb-4" id="xemchitiet" hidden>
                             <div class="card-header">
@@ -297,27 +329,17 @@
                         <!-- End -->
                         <!-- Tạo hoạt động điểm danh mới -->
                         <div id="create_diemdanh" hidden class="card mb-4">
-                            <style>
-                                table {
-                                  border-collapse: collapse;
-                                  width: 100%;
-                                }
-                                th, td {
-                                  border: 1px solid black;
-                                  padding: 8px;
-                                  text-align: left;
-                                  max-width: 250px;
-                                  word-wrap: break-word;
-                                }
-                            </style>
-                            <br>
                                 <div class="card-header">
                                     <i class="fas fa-table me-1"></i>
                                    Tạo hoạt động điểm danh mới
-                                </div><br>                            
+                                </div></br>                           
                             <div class="form-floating mb-3">
                                 <input class="form-control" id="inputdiemdanhname" type="text" placeholder="Vui lòng nhập tên hoạt động" />
                                 <label for="inputdiemdanhname">Vui lòng nhập tên hoạt động</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="inputdiadiem" type="text" placeholder="Vui lòng nhập địa điểm" />
+                                <label for="inputdiadiem">Vui lòng nhập địa điểm</label>
                             </div>
                             <!-- <div class="form-floating mb-3">
                                 <input class="form-control" id="outputID2" type="text" disabled/>
@@ -325,6 +347,7 @@
                                 <div>
                                     <label for="myDropdown">Vui lòng chọn lớp học cần điểm danh:</label>
                                         <select id="myDropdown">
+                                            <option value="value1">Vui lòng chọn lớp học</option>
                                         <!-- <option value="value1">Option 1</option>
                                         <option value="value2">Option 2</option>
                                         <option value="value3">Option 3</option> -->
@@ -334,15 +357,6 @@
                                         <!-- Bảng HTML -->
                                         <table id="lophoc">
                                             <thead>
-
-                                            <tr>
-                                                <tr>
-                                                    <th>MSSV</th>
-                                                    <th>Họ tên</th>
-                                                    <th>Giới tính</th>
-                                                    <th>Select</th>
-                                                </tr>
-                                            </tr>
                                             </thead>
                                             <tbody>
                                             </tbody>
@@ -369,6 +383,7 @@
                                 <div>
                                     <label for="myDropdown1" style="margin: 10px 10px 10px 10px;">Vui lòng chọn lớp học cần gửi thông báo:</label>
                                         <select id="myDropdown1">
+                                            <option value="null">Vui lòng chọn lớp học</option>
                                         <!-- <option value="value1">Option 1</option>
                                         <option value="value2">Option 2</option>
                                         <option value="value3">Option 3</option> -->
@@ -376,10 +391,18 @@
                                     <br>
                                     <div class="card-body">
                                         <!-- Text -->
-                                                 <textarea name="message" id="txt_message" cols="120" rows="10"></textarea>                      
+                                                 <textarea name="message" id="txt_message" cols="120" rows="10"></textarea>     
+                                                 
+                                    <!--- BEGIN FORM UPLOAD FILES --->
+                                    <!-- Form upload file -->
+                                        <form>
+                                            <input type="file" id="fileInput2" title="Chọn file đính kèm">
+                                        </form>  
+                                        <a href="http://"  rel="noopener noreferrer"></a>
+									<!--- END FORM UPLOAD FILES --->
                                     </div>
                                     <br>
-                                    <a class="btn btn-primary2" onclick="SentMessage()">Gửi thông báo</a>
+                                    <a class="btn btn-primary2" onclick="LuuThongBao()">Gửi thông báo</a>
                                 </div>
                             </div>
                         <div id="formchatbox" hidden>

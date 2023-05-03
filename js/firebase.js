@@ -107,6 +107,7 @@ link3.addEventListener('click', function(event) {
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
+  document.getElementById("choncansu").hidden = true;
 });
 
 const link4 = document.getElementById('showchatbox');
@@ -121,6 +122,7 @@ link4.addEventListener('click', function(event) {
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = false;
   document.getElementById("xoalophoc").hidden = true;
+  document.getElementById("choncansu").hidden = true;
   Danhsachlop();
 });
 
@@ -136,7 +138,24 @@ link5.addEventListener('click', function(event) {
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = false;
+  document.getElementById("choncansu").hidden = true;
   GetData2();
+});
+
+const link6 = document.getElementById('selectcansu');
+link6.addEventListener('click', function(event) {
+  document.getElementById("create_classroom").hidden = true;
+  document.getElementById("showdiemdanh").hidden = true;
+  document.getElementById("dashboardclassroom").hidden = true;
+  document.getElementById("xemchitiet").hidden = true;
+  document.getElementById("create_diemdanh").hidden = true;
+  document.getElementById("edit_thongtindangnhap").hidden = true;
+  document.getElementById("sent_message").hidden = true;
+  document.getElementById("myChart").hidden = true;
+  document.getElementById("formchatbox").hidden = true;
+  document.getElementById("xoalophoc").hidden = true;
+  document.getElementById("choncansu").hidden = false;
+  danhsachlophoc("danhsachlophoc");
 });
 
 // const link2 = document.getElementById('xemchitiet');
@@ -193,7 +212,7 @@ if (create_classroom == false){
 function Showinfo(){
   var mssv = cookie.id;
   let img = document.getElementById("showavarta");
-  img.src = "/dashboard/uploads/"+mssv+".jpg";
+  img.src = "/dashboard/uploads/avatar/"+mssv+".png";
 
 
 
@@ -304,8 +323,8 @@ function GetID(){
   var myButtonnew = document.getElementById("title_message");
   myButtonnew.addEventListener("click", function() {
     var dropdownnew = document.getElementById("myDropdown1");
-    while (dropdownnew.options.length > 0) {
-      dropdownnew.remove(0);
+    while (dropdownnew.options.length > 1) {
+      dropdownnew.remove(1);
     }
     var idnew = cookie.id;
     db.collection("classroom").where("idteacher", "==", idnew)
@@ -322,16 +341,57 @@ function GetID(){
 
       })
   })
+
+  function danhsachlophoc(selectedID){
+    var dropdownnew = document.getElementById(selectedID);
+    while (dropdownnew.options.length > 1) {
+      dropdownnew.remove(1);
+    }
+    db.collection("classroom").where("idteacher", "==", cookie.id)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          var selectElementnew = document.getElementById(selectedID);
+          var newOptionnew = document.createElement("option");
+          newOptionnew.value = doc.id;
+          newOptionnew.text = doc.data().tenlop;
+          // Thêm option mới vào select
+          selectElementnew.add(newOptionnew);
+        })
+      })
+  }
+
+  
  
 
-  function SentMessage(){
+  function LuuThongBao(){
     let message = {
       time: "",
       content: "",
       sent_from: "",
       sent_to: "",
-      name: ""
+      name: "",
+      file: ""
     };
+
+    const fileInput = document.getElementById('fileInput2');
+
+    const filePath = fileInput.value.split("\\").pop();
+    message.file = filePath;
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'uploadfile.php');
+    xhr.onload = function() {
+    if (xhr.status === 200) {
+        console.log('Upload successful!');
+    } else {
+        console.log('Upload failed!');
+    }
+    };
+    xhr.send(formData);
 
     message.time = Gettime();
     message.name = document.getElementById("title_message").value;
@@ -352,50 +412,55 @@ function GetID(){
       var dropdown = document.getElementById("myDropdown");
 
       // Lặp qua các option và xóa chúng
-      while (dropdown.options.length > 0) {
-        dropdown.remove(0);
+      while (dropdown.options.length > 1) {
+        dropdown.remove(1);
       }
 
       // Xử lý sự kiện ở đây
           // Lấy đối tượng select từ id của nó
-    var id = cookie.id;
     // Thực hiện truy vấn trong Firestore
-      db.collection("classroom").where("idteacher", "==", id)
+    var selectElement = document.getElementById("myDropdown");
+      db.collection("classroom").where("idteacher", "==", cookie.id)
       .get()
       .then((querySnapshot) => {
           // Lặp qua các tài liệu trong truy vấn
           querySnapshot.forEach((doc) => {
-              var selectElement = document.getElementById("myDropdown");
               // Tạo một option mới
               var newOption = document.createElement("option");
               newOption.value = doc.id;
               newOption.text = doc.data().tenlop;
               // Thêm option mới vào select
               selectElement.add(newOption);
-              selectElement.onchange = function() {
-                CLearTablename("lophoc");
-                // Lấy giá trị của tùy chọn được chọn
-                for (var mssv of doc.data().dssv) {
-                    // Lấy tham chiếu đến document có id là "abc123" trong collection "myCollection"
-                    var docRef = firebase.firestore().collection("student").doc(mssv);
-                    // Lấy dữ liệu của document và xử lý kết quả
-                    docRef.get().then(function(doc) {
-                      const tableBody = $("#lophoc tbody");
-                      var data = doc.data();
-                            const row = `
-                            <tr>
-                              <td>${data.mssv}</td>
-                              <td>${data.name}</td>
-                              <td>${data.gender}</td>
-                              <td><input type="checkbox" class="checkbox"</td>
-                            </tr>
-                          `;
-                          tableBody.append(row);
-                    });
-                    $("#lophoce").tablesorter();
-                };
-              };
+              console.log(doc.data().dssv);
           });
+          selectElement.onchange = function() {
+          //  alert(selectElement.value);
+          CLearTablename("lophoc");
+            // Lấy giá trị của tùy chọn được chọn
+            db.collection("classroom").doc(selectElement.value)
+            .get()
+            .then(function(doc) {
+              for (var mssv of doc.data().dssv) {
+                // Lấy tham chiếu đến document có id là "abc123" trong collection "myCollection"
+                var docRef = firebase.firestore().collection("student").doc(mssv);
+                // Lấy dữ liệu của document và xử lý kết quả
+                docRef.get().then(function(doc2) {
+                  const tableBody = $("#lophoc tbody");
+                  var data = doc2.data();
+                        const row = `
+                        <tr>
+                          <td>${data.mssv}</td>
+                          <td>${data.name}</td>
+                          <td>${data.gender}</td>
+                          <td><input type="checkbox" class="checkbox"</td>
+                        </tr>
+                      `;
+                      tableBody.append(row);
+                });
+                $("#lophoc").tablesorter();
+            };
+            });
+          };
       })
       .catch((error) => {
           console.log("Error getting documents: ", error);
@@ -407,6 +472,7 @@ function GetID(){
 
   function CreateDiemdanh(){
     var name = document.getElementById("inputdiemdanhname").value;
+    var diadiem = document.getElementById("inputdiadiem").value;
     var time = Gettime();
     var listsv = [];
             // Lấy tất cả các ô kiểm tra
@@ -434,9 +500,11 @@ function GetID(){
             }
 
             let newdiemdanh = {
+              user_create: cookie.id,
               name: name,
               time: time,
-              listsv: listsv
+              listsv: listsv,
+              diadiem: diadiem
             };
             SaveDatabaseRandomID("diemdanh",newdiemdanh);
             alert("Tạo hoạt động điểm danh thành công");
@@ -465,12 +533,14 @@ function GetID(){
       time: "",
       idteacher: "",
       tenlop: "",
+      content: "",
       dssv: ["null"]
     };
 
     newClassroom.time = Gettime();
     newClassroom.idteacher = cookie.id;
     newClassroom.tenlop = document.getElementById("inputClassname").value;
+    newClassroom.content = document.getElementById("inputClasscontent").value;
     for (var i = 0; i < data.length; i++) {
       let newStudent = {
         mssv: "",
@@ -552,7 +622,8 @@ function GetData(){
             <tr>
               <td>${book.tenlop}</td>
               <td>${book.idteacher}</td>
-              <td>${book.dssv}</td>
+              <td>${book.content}</td>
+              <td>${book.dssv.length} Sinh viên</td>
               <td>${timestamp}</td>
             </tr>
           `;
@@ -574,7 +645,8 @@ function GetData(){
             <tr>
               <td>${book.tenlop}</td>
               <td>${book.idteacher}</td>
-              <td>${book.dssv}</td>
+              <td>${book.content}</td>
+              <td>${book.dssv.length} Sinh viên</td>
               <td>${timestamp}</td>
             </tr>
           `;
@@ -643,6 +715,9 @@ function DeleteClassroom(id){
 }
 
 
+let tenhoatdong = [];
+let soluong = [];
+// vebieudo(tenhoatdong,soluong);
 
 function GetDataTable(){
   db.collection("diemdanh").onSnapshot((querySnapshot) => {
@@ -655,6 +730,8 @@ function GetDataTable(){
       const date = new Date(timestamp.seconds * 1000); // chuyển đổi timestamp thành đối tượng Date
       const dateString = date.toLocaleDateString(); // định dạng ngày tháng thành chuỗi
       // console.log(dateString); // hiển thị ngày tháng dưới dạng chuỗi
+      tenhoatdong.push(bookk.name);
+      soluong.push(bookk.listsv.length);
         stt++;
         const row = `
           <tr>
@@ -662,16 +739,89 @@ function GetDataTable(){
             <td>${bookk.name}</td>
             <td>${timestamp}</td>
             <td>${bookk.listsv.length}</td>
-            <td onclick="xemchitietdiemdanh()">Click here</td>
-
+            <td id="${doc.id}" onclick="xemdiemdanh('${doc.id}')" >Click here</td>
           </tr>
         `;
         tableBody.append(row);
       });
       // Initialize tablesorter
       $("#diemdanh").tablesorter();
+      myChart.update();
     });
+
 }
+
+
+
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+      labels: tenhoatdong,
+      datasets: [{
+          label: 'Số lượng tham gia',
+          data: soluong,
+          backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+      }]
+  },
+  options: {
+      scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero: true
+              }
+          }]
+      },
+      responsive: false, // thêm dòng này để tắt khả năng tương thích của biểu đồ với màn hình
+      maintainAspectRatio: false // thêm dòng này để vô hiệu hóa tỷ lệ giữa chiều rộng và chiều cao
+  }
+});
+
+
+
+
+  function xemdiemdanh(msg){
+    ClearTableChitiet();
+  document.getElementById("create_classroom").hidden = true;
+  document.getElementById("showdiemdanh").hidden = true;
+  document.getElementById("dashboardclassroom").hidden = true;
+  document.getElementById("xemchitiet").hidden = false;
+  document.getElementById("create_diemdanh").hidden = true;
+  document.getElementById("myChart").hidden = true;
+  let id = msg;
+    db.collection("diemdanh").doc(id).get().then((doc) => {
+      if (doc.exists) {
+        var name = doc.data().listsv;
+        for (let index = 0; index < name.length; index++) {
+          const element = name[index];
+          getStudentName(element)
+      }
+      } else {
+        console.log("Tài liệu không tồn tại");
+      }
+    }).catch((error) => {
+      console.log("Lỗi: ", error);
+
+    });
+  }
+
+
 
 function getStudentName(mssv) {
   const tableBody = $("#diemdanhchitiet tbody");
@@ -909,7 +1059,7 @@ function RecoveryPassword(){
       querySnapshot.forEach((doc) => {
         var thongbao = doc.data();
         thonbao.content = thongbao.content;
-        html += '<li class="header_notify-item" id="'+doc.id+'">'+'<img src="/dashboard/uploads/'+thonbao.avarta+'" alt="" width="30px" height="30px"><p onclick="Showthongbaonoi()">&nbsp;'+thongbao.name+'</p></li>';
+        html += '<li class="header_notify-item" id="'+doc.id+'">'+'<img src="/dashboard/uploads/avatar/'+thonbao.avarta+'" alt="" width="30px" height="30px"><p onclick="Showthongbaonoi()">&nbsp;'+thongbao.name+'</p></li>';
       });
       formtb.innerHTML = html;
       html = "";
@@ -939,12 +1089,11 @@ function RecoveryPassword(){
         const itemId = this.id;
         var docRef = firebase.firestore().collection("notification").doc(itemId);
         docRef.get().then(function(doc) {
-          console.log(doc.data().name);
       // Tạo phần tử div để chứa bảng thông báo
       var popup = document.createElement('div');
 
       // Thêm nội dung cho bảng thông báo
-      var html = "<div>Nội dung: "+doc.data().content+"</div><div>Thông báo lúc: "+doc.data().time+"</div>";
+      var html = "<div>Nội dung: "+doc.data().content+"</div><div>Thông báo lúc: "+doc.data().time+"</div><div>File đính kèm: <a target='_blank' href=/dashboard/uploads/files/"+doc.data().file+">"+doc.data().file+"</a></div>";
       popup.innerHTML = html;
  
       // Thêm nút "OK" vào bảng thông báo
@@ -974,45 +1123,7 @@ Notification();
 
 
 
-var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-      labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
-      datasets: [{
-          label: 'Doanh thu',
-          data: [1200, 1500, 800, 1000, 2000, 1800],
-          backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
-      }]
-  },
-  options: {
-      scales: {
-          yAxes: [{
-              ticks: {
-                  beginAtZero: true
-              }
-          }]
-      },
-      responsive: false, // thêm dòng này để tắt khả năng tương thích của biểu đồ với màn hình
-      maintainAspectRatio: false // thêm dòng này để vô hiệu hóa tỷ lệ giữa chiều rộng và chiều cao
-  }
-});
+
 
 const chatBox = document.getElementById('chatbox');
 
