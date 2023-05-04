@@ -240,7 +240,7 @@ function Showinfo(){
 
 
 
-  db.collection("student").doc(mssv).get().then((doc) => {
+  db.collection("info").doc(mssv).get().then((doc) => {
     document.getElementById("outputMssv").value = doc.data().mssv;
     document.getElementById("outputName").value = doc.data().name;
     document.getElementById("outputEmail").value = doc.data().email;
@@ -303,7 +303,7 @@ function Saveinfo(){
   newinfoStudent.gender = document.getElementById("outputGender").value;
   newinfoStudent.email = document.getElementById("outputEmail").value;
   newinfoStudent.age = document.getElementById("outputDay").value;
-  SaveDatabase("student",newinfoStudent.mssv,newinfoStudent);
+  SaveDatabase("info",newinfoStudent.mssv,newinfoStudent);
   alert("Lưu thành công");
 
   document.getElementById("outputMssv").disabled = true;
@@ -356,7 +356,7 @@ function GetID(){
       dropdownnew.remove(1);
     }
     var idnew = cookie.id;
-    db.collection("classroom").where("idteacher", "==", idnew)
+    db.collection("classRoom").where("idteacher", "==", idnew)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -377,7 +377,7 @@ function GetID(){
       dropdownnew.remove(1);
     }
     var selectElement = document.getElementById(selectedID);
-    db.collection("classroom").where("idteacher", "==", cookie.id)
+    db.collection("classRoom").where("idteacher", "==", cookie.id)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -392,12 +392,12 @@ function GetID(){
         // alert(selectElement.value);
         CLearTablename(table);
           // Lấy giá trị của tùy chọn được chọn
-          db.collection("classroom").doc(selectElement.value)
+          db.collection("classRoom").doc(selectElement.value)
           .get()
           .then(function(doc) {
             for (var mssv of doc.data().dssv) {
               // Lấy tham chiếu đến document có id là "abc123" trong collection "myCollection"
-              var docRef = firebase.firestore().collection("student").doc(mssv);
+              var docRef = firebase.firestore().collection("info").doc(mssv);
               // Lấy dữ liệu của document và xử lý kết quả
               docRef.get().then(function(doc2) {
                 const tableBody = $("#"+table+" tbody");
@@ -489,7 +489,7 @@ function GetID(){
           // Lấy đối tượng select từ id của nó
     // Thực hiện truy vấn trong Firestore
     var selectElement = document.getElementById("myDropdown");
-      db.collection("classroom").where("idteacher", "==", cookie.id)
+      db.collection("classRoom").where("idteacher", "==", cookie.id)
       .get()
       .then((querySnapshot) => {
           // Lặp qua các tài liệu trong truy vấn
@@ -506,12 +506,12 @@ function GetID(){
           //  alert(selectElement.value);
           CLearTablename("lophoc");
             // Lấy giá trị của tùy chọn được chọn
-            db.collection("classroom").doc(selectElement.value)
+            db.collection("classRoom").doc(selectElement.value)
             .get()
             .then(function(doc) {
               for (var mssv of doc.data().dssv) {
                 // Lấy tham chiếu đến document có id là "abc123" trong collection "myCollection"
-                var docRef = firebase.firestore().collection("student").doc(mssv);
+                var docRef = firebase.firestore().collection("info").doc(mssv);
                 // Lấy dữ liệu của document và xử lý kết quả
                 docRef.get().then(function(doc2) {
                   const tableBody = $("#lophoc tbody");
@@ -553,13 +553,13 @@ function GetID(){
 
   function UpdateRule(list,list2){
     for (i=0;i<list.length;i++){
-    var docRef = db.collection("student").doc(list[i]);
+    var docRef = db.collection("info").doc(list[i]);
     // Cập nhật trường "name" thành "Peter"
     docRef.update({
         rule: "1"
     })}
     for (i=0;i<list2.length;i++){
-      var docRef = db.collection("student").doc(list2[i]);
+      var docRef = db.collection("info").doc(list2[i]);
       // Cập nhật trường "name" thành "Peter"
       docRef.update({
           rule: "2"
@@ -570,7 +570,7 @@ function GetID(){
 
   function DeleteSV(list){
     var selectElement = document.getElementById("danhsachlophoc2").value;
-    var docRef = db.collection("classroom").doc(selectElement);
+    var docRef = db.collection("classRoom").doc(selectElement);
     docRef.update(
       {
         dssv: list
@@ -648,7 +648,7 @@ function GetID(){
               listsv: listsv,
               diadiem: diadiem
             };
-            SaveDatabaseRandomID("diemdanh",newdiemdanh);
+            SaveDatabaseRandomID("attendance",newdiemdanh);
             alert("Tạo hoạt động điểm danh thành công");
             document.getElementById("inputdiemdanhname").value = "";
             document.getElementById("inputdiadiem").value = "";
@@ -723,9 +723,9 @@ function GetID(){
             newStudent.age = formattedDate;
         }
       }
-        SaveDatabase("student",newStudent.mssv,newStudent);
+        SaveDatabase("info",newStudent.mssv,newStudent);
     }
-    SaveDatabaseRandomID("classroom",newClassroom);
+    SaveDatabaseRandomID("classRoom",newClassroom);
     alert("Tạo lớp học thành công. Tài khoản mặc định cho sinh viên là email với mật khẩu 123456");
     document.getElementById("inputClassname").value = "";
     document.getElementById("inputClasscontent").value = "";
@@ -760,7 +760,7 @@ function GetID(){
       // Get data from Firestore
 function GetData(){
   if (cookie.rule == 0){
-    db.collection("classroom").where("idteacher","==",cookie.id).onSnapshot((querySnapshot) => {
+    db.collection("classRoom").where("idteacher","==",cookie.id).onSnapshot((querySnapshot) => {
       ClearTable();
         const tableBody = $("#my-table tbody");
         querySnapshot.forEach((doc) => {
@@ -783,7 +783,7 @@ function GetData(){
  //       setTimeout(GetData, 1000);
       });
   }else{
-    db.collection("classroom").where("dssv", "array-contains", cookie.id).onSnapshot((querySnapshot) => {
+    db.collection("classRoom").where("dssv", "array-contains", cookie.id).onSnapshot((querySnapshot) => {
       ClearTable();
         const tableBody = $("#my-table tbody");
         querySnapshot.forEach((doc) => {
@@ -810,7 +810,7 @@ function GetData(){
 }
 
 function GetData2(){
-    db.collection("classroom").where("idteacher","==",cookie.id).onSnapshot((querySnapshot) => {
+    db.collection("classRoom").where("idteacher","==",cookie.id).onSnapshot((querySnapshot) => {
       ClearTable2();
         const tableBody = $("#my-table2 tbody");
         querySnapshot.forEach((doc) => {
@@ -854,7 +854,7 @@ function DeleteClassroom(id){
             for (var j = 0; j < selectedRows.length; j++) {
               var id = selectedRows[j].cells[1].textContent;
               // Get a reference to the document to be deleted
-              db.collection("classroom").doc(id).delete().then(function() {
+              db.collection("classRoom").doc(id).delete().then(function() {
                   console.log("Document successfully deleted!");
               }).catch(function(error) {
                   console.error("Error removing document: ", error);
@@ -869,7 +869,7 @@ let soluong = [];
 // vebieudo(tenhoatdong,soluong);
 
 function GetDataTable(){
-  db.collection("diemdanh").onSnapshot((querySnapshot) => {
+  db.collection("attendance").onSnapshot((querySnapshot) => {
       var stt = 0;
       ClearTableDiemdanh();
       const tableBody = $("#diemdanh tbody");
@@ -955,7 +955,7 @@ function GetDataTable(){
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("myChart").hidden = true;
   document.getElementById("infodiemdanh").innerHTML = "Hoạt động: "+ten+" - Diễn ra vào lúc: "+time+" - Tại: "+diadiem+"            Với danh sách sinh viên tham gia bên dưới";
-    db.collection("diemdanh").doc(id).get().then((doc) => {
+    db.collection("attendance").doc(id).get().then((doc) => {
       if (doc.exists) {
         var name = doc.data().listsv;
         for (let index = 0; index < name.length; index++) {
@@ -976,7 +976,7 @@ function GetDataTable(){
 function getStudentName(mssv) {
   const tableBody = $("#diemdanhchitiet tbody");
 // Lấy reference đến document của sinh viên
-var studentRef = db.collection("student").doc(mssv);
+var studentRef = db.collection("info").doc(mssv);
 // Lấy dữ liệu của document đó
 studentRef.get().then(function(doc) {
     if (doc.exists) {
@@ -1012,7 +1012,7 @@ function xemchitietdiemdanh(){
   document.getElementById("xemchitiet").hidden = false;
   document.getElementById("create_diemdanh").hidden = true;
   let id = "rRPsjv1QdEczsROKKRzT";
-    db.collection("diemdanh").doc(id).get().then((doc) => {
+    db.collection("attendance").doc(id).get().then((doc) => {
       if (doc.exists) {
         var name = doc.data().listsv;
         for (let index = 0; index < name.length; index++) {
@@ -1138,7 +1138,7 @@ function Register(){
       age: "Null"
     };
     
-    SaveDatabase("student",newStudent.mssv,newStudent);
+    SaveDatabase("info",newStudent.mssv,newStudent);
 
 }
 
@@ -1162,7 +1162,7 @@ function Checklogin(){
 
     firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
     // Lấy tham chiếu đến collection "users"
-       const usersRef = firebase.firestore().collection("student");
+       const usersRef = firebase.firestore().collection("info");
 
       // // Tìm kiếm các document có trường "email" có giá trị là "example@gmail.com"
       usersRef.where("email", "==", email).get().then((querySnapshot) => {
@@ -1218,7 +1218,7 @@ function RecoveryPassword(){
   }
 
   function getavarta(id){
-    var docRef = firebase.firestore().collection("student").doc(id);
+    var docRef = firebase.firestore().collection("info").doc(id);
     docRef.get().then(function(doc) {
     var data = doc.data();
     thonbao.avarta = data.avarta;
@@ -1388,7 +1388,7 @@ function Danhsachlop() {
   friendList.innerHTML="";
   if(cookie.rule == 0){
     var firestore = firebase.firestore();
-            firestore.collection("classroom").where("idteacher", "==", cookie.id)
+            firestore.collection("classRoom").where("idteacher", "==", cookie.id)
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
@@ -1396,7 +1396,7 @@ function Danhsachlop() {
                     const data = doc.data();
                     for(i=0;i<data.dssv.length;i++){
                       var mssv = data.dssv[i];
-                      var docRef = firebase.firestore().collection("student").doc(mssv);
+                      var docRef = firebase.firestore().collection("info").doc(mssv);
                       docRef.get().then(function(doc1) {
                       var data1 = doc1.data();
                       addFriend(data1.name,data1.email);
@@ -1406,19 +1406,19 @@ function Danhsachlop() {
             })
   }else if(cookie.rule == 2){
     var firestore = firebase.firestore();
-            firestore.collection("classroom").where("dssv", "array-contains", cookie.id)
+            firestore.collection("classRoom").where("dssv", "array-contains", cookie.id)
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                     console.log(doc.id);
                     const data = doc.data();
-                    firebase.firestore().collection("student").doc(data.idteacher).get().then(function(doc2) {
+                    firebase.firestore().collection("info").doc(data.idteacher).get().then(function(doc2) {
                       var data2 = doc2.data();
                       addFriend(data2.name,data2.email);
                     });
                     for(i=0;i<data.dssv.length;i++){
                       var mssv = data.dssv[i];
-                      var docRef = firebase.firestore().collection("student").doc(mssv);
+                      var docRef = firebase.firestore().collection("info").doc(mssv);
                     docRef.get().then(function(doc1) {
                       var data1 = doc1.data();
                       addFriend(data1.name,data1.email);
