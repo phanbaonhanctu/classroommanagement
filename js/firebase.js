@@ -226,12 +226,17 @@ if (cookie.rule == 0){
     delete_classroom = false;
 }
 
+
 if (create_classroom == false){
   var notification = document.getElementById("create_classroom");
   notification.innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
   var notification2 = document.getElementById("xoalophoc");
   notification2.innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+  document.getElementById("xoasv").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+  document.getElementById("choncansu").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
 }
+
+
 
 function Showinfo(){
   var mssv = cookie.id;
@@ -355,8 +360,8 @@ function GetID(){
     while (dropdownnew.options.length > 1) {
       dropdownnew.remove(1);
     }
-    var idnew = cookie.id;
-    db.collection("classRoom").where("idteacher", "==", idnew)
+    if (cookie.rule == 0){
+      db.collection("classRoom").where("idteacher", "==", cookie.id)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -367,8 +372,21 @@ function GetID(){
           // Thêm option mới vào select
           selectElementnew.add(newOptionnew);
         })
-
       })
+    }else{
+      db.collection("classRoom").where("dssv", "array-contains", cookie.id)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          var selectElementnew = document.getElementById("myDropdown1");
+          var newOptionnew = document.createElement("option");
+          newOptionnew.value = doc.id;
+          newOptionnew.text = doc.data().tenlop;
+          // Thêm option mới vào select
+          selectElementnew.add(newOptionnew);
+        })
+      })
+    }
   })
 
   function danhsachlophoc(selectedID,table){
@@ -489,51 +507,97 @@ function GetID(){
           // Lấy đối tượng select từ id của nó
     // Thực hiện truy vấn trong Firestore
     var selectElement = document.getElementById("myDropdown");
-      db.collection("classRoom").where("idteacher", "==", cookie.id)
-      .get()
-      .then((querySnapshot) => {
-          // Lặp qua các tài liệu trong truy vấn
-          querySnapshot.forEach((doc) => {
-              // Tạo một option mới
-              var newOption = document.createElement("option");
-              newOption.value = doc.id;
-              newOption.text = doc.data().tenlop;
-              // Thêm option mới vào select
-              selectElement.add(newOption);
-              console.log(doc.data().dssv);
-          });
-          selectElement.onchange = function() {
-          //  alert(selectElement.value);
-          CLearTablename("lophoc");
-            // Lấy giá trị của tùy chọn được chọn
-            db.collection("classRoom").doc(selectElement.value)
-            .get()
-            .then(function(doc) {
-              for (var mssv of doc.data().dssv) {
-                // Lấy tham chiếu đến document có id là "abc123" trong collection "myCollection"
-                var docRef = firebase.firestore().collection("info").doc(mssv);
-                // Lấy dữ liệu của document và xử lý kết quả
-                docRef.get().then(function(doc2) {
-                  const tableBody = $("#lophoc tbody");
-                  var data = doc2.data();
-                        const row = `
-                        <tr>
-                          <td>${data.mssv}</td>
-                          <td>${data.name}</td>
-                          <td>${data.gender}</td>
-                          <td><input type="checkbox" class="checkbox"></td>
-                        </tr>
-                      `;
-                      tableBody.append(row);
-                });
-                $("#lophoc").tablesorter();
-            };
+      if(cookie.rule == 0){
+        db.collection("classRoom").where("idteacher", "==", cookie.id)
+        .get()
+        .then((querySnapshot) => {
+            // Lặp qua các tài liệu trong truy vấn
+            querySnapshot.forEach((doc) => {
+                // Tạo một option mới
+                var newOption = document.createElement("option");
+                newOption.value = doc.id;
+                newOption.text = doc.data().tenlop;
+                // Thêm option mới vào select
+                selectElement.add(newOption);
+                console.log(doc.data().dssv);
             });
-          };
-      })
-      .catch((error) => {
+            selectElement.onchange = function() {
+            //  alert(selectElement.value);
+            CLearTablename("lophoc");
+              // Lấy giá trị của tùy chọn được chọn
+              db.collection("classRoom").doc(selectElement.value)
+              .get()
+              .then(function(doc) {
+                for (var mssv of doc.data().dssv) {
+                  // Lấy tham chiếu đến document có id là "abc123" trong collection "myCollection"
+                  var docRef = firebase.firestore().collection("info").doc(mssv);
+                  // Lấy dữ liệu của document và xử lý kết quả
+                  docRef.get().then(function(doc2) {
+                    const tableBody = $("#lophoc tbody");
+                    var data = doc2.data();
+                          const row = `
+                          <tr>
+                            <td>${data.mssv}</td>
+                            <td>${data.name}</td>
+                            <td>${data.gender}</td>
+                            <td><input type="checkbox" class="checkbox"></td>
+                          </tr>
+                        `;
+                        tableBody.append(row);
+                  });
+                  $("#lophoc").tablesorter();
+              };
+              });
+            };
+        }).catch((error) => {
           console.log("Error getting documents: ", error);
       });
+      }else{
+        db.collection("classRoom").where("dssv", "array-contains", cookie.id)
+        .get()
+        .then((querySnapshot) => {
+            // Lặp qua các tài liệu trong truy vấn
+            querySnapshot.forEach((doc) => {
+                // Tạo một option mới
+                var newOption = document.createElement("option");
+                newOption.value = doc.id;
+                newOption.text = doc.data().tenlop;
+                // Thêm option mới vào select
+                selectElement.add(newOption);
+                console.log(doc.data().dssv);
+            });
+            selectElement.onchange = function() {
+            //  alert(selectElement.value);
+            CLearTablename("lophoc");
+              // Lấy giá trị của tùy chọn được chọn
+              db.collection("classRoom").doc(selectElement.value)
+              .get()
+              .then(function(doc) {
+                for (var mssv of doc.data().dssv) {
+                  // Lấy tham chiếu đến document có id là "abc123" trong collection "myCollection"
+                  var docRef = firebase.firestore().collection("info").doc(mssv);
+                  // Lấy dữ liệu của document và xử lý kết quả
+                  docRef.get().then(function(doc2) {
+                    const tableBody = $("#lophoc tbody");
+                    var data = doc2.data();
+                          const row = `
+                          <tr>
+                            <td>${data.mssv}</td>
+                            <td>${data.name}</td>
+                            <td>${data.gender}</td>
+                            <td><input type="checkbox" class="checkbox"></td>
+                          </tr>
+                        `;
+                        tableBody.append(row);
+                  });
+                  $("#lophoc").tablesorter();
+              };
+              });
+            };
+        }).catch((error) => {
+          console.log("Error getting documents: ", error);
+      });
+      }
     });
 
 
@@ -613,45 +677,50 @@ function GetID(){
     
 
   function CreateDiemdanh(){
-    var name = document.getElementById("inputdiemdanhname").value;
-    var diadiem = document.getElementById("inputdiadiem").value;
-    var time = Gettime();
-    var listsv = [];
-            // Lấy tất cả các ô kiểm tra
-            var checkboxes = document.getElementsByClassName("checkbox");
-    
-            // Lưu trữ các hàng được chọn
-            var selectedRows = [];
-          
-            // Duyệt qua tất cả các ô kiểm tra và kiểm tra xem các ô kiểm tra nào được chọn
-            for (var i = 0; i < checkboxes.length; i++) {
-              if (checkboxes[i].checked) {
-                // Lấy hàng tương ứng với ô kiểm tra được chọn
-                var selectedRow = checkboxes[i].parentNode.parentNode;
-          
-                // Lưu trữ hàng được chọn
-                selectedRows.push(selectedRow);
+    if(cookie.rule == 2){
+      alert("Bạn không có quyền tạo hoạt động điểm danh");
+    }else{
+      var name = document.getElementById("inputdiemdanhname").value;
+      var diadiem = document.getElementById("inputdiadiem").value;
+      var time = Gettime();
+      var listsv = [];
+              // Lấy tất cả các ô kiểm tra
+              var checkboxes = document.getElementsByClassName("checkbox");
+      
+              // Lưu trữ các hàng được chọn
+              var selectedRows = [];
+            
+              // Duyệt qua tất cả các ô kiểm tra và kiểm tra xem các ô kiểm tra nào được chọn
+              for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                  // Lấy hàng tương ứng với ô kiểm tra được chọn
+                  var selectedRow = checkboxes[i].parentNode.parentNode;
+            
+                  // Lưu trữ hàng được chọn
+                  selectedRows.push(selectedRow);
+                }
               }
-            }
-          
-            // Lấy dữ liệu từ các hàng được chọn
-            for (var j = 0; j < selectedRows.length; j++) {
-              var masv = selectedRows[j].cells[0].textContent;
-              console.log(masv);
-              listsv.push(masv);
-            }
+            
+              // Lấy dữ liệu từ các hàng được chọn
+              for (var j = 0; j < selectedRows.length; j++) {
+                var masv = selectedRows[j].cells[0].textContent;
+                console.log(masv);
+                listsv.push(masv);
+              }
+  
+              let newdiemdanh = {
+                user_create: cookie.id,
+                name: name,
+                time: time,
+                listsv: listsv,
+                diadiem: diadiem,
+              };
+              SaveDatabaseRandomID("attendance",newdiemdanh);
+              alert("Tạo hoạt động điểm danh thành công");
+              document.getElementById("inputdiemdanhname").value = "";
+              document.getElementById("inputdiadiem").value = "";
+    }
 
-            let newdiemdanh = {
-              user_create: cookie.id,
-              name: name,
-              time: time,
-              listsv: listsv,
-              diadiem: diadiem
-            };
-            SaveDatabaseRandomID("attendance",newdiemdanh);
-            alert("Tạo hoạt động điểm danh thành công");
-            document.getElementById("inputdiemdanhname").value = "";
-            document.getElementById("inputdiadiem").value = "";
   }
 
   function readFile() {
@@ -889,7 +958,7 @@ function GetDataTable(){
             <td>${timestamp}</td>
             <td>${bookk.diadiem}</td>
             <td>${bookk.listsv.length}</td>
-            <td id="${doc.id}" onclick="xemdiemdanh('${doc.id}','${bookk.name}','${timestamp}','${bookk.diadiem}')" >Click here</td>
+            <td id="${doc.id}" onclick="xemdiemdanh('${doc.id}','${bookk.name}','${timestamp}','${bookk.diadiem}','${bookk.user_create}')" >Click here</td>
           </tr>
         `;
         tableBody.append(row);
@@ -946,7 +1015,7 @@ function GetDataTable(){
 
 
 
-  function xemdiemdanh(id,ten,time,diadiem){
+  function xemdiemdanh(id,ten,time,diadiem,user){
     ClearTableChitiet();
   document.getElementById("create_classroom").hidden = true;
   document.getElementById("showdiemdanh").hidden = true;
@@ -954,7 +1023,7 @@ function GetDataTable(){
   document.getElementById("xemchitiet").hidden = false;
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("myChart").hidden = true;
-  document.getElementById("infodiemdanh").innerHTML = "Hoạt động: "+ten+" - Diễn ra vào lúc: "+time+" - Tại: "+diadiem+"            Với danh sách sinh viên tham gia bên dưới";
+  document.getElementById("infodiemdanh").innerHTML = "Hoạt động: "+ten+" - Diễn ra vào lúc: "+time+" - Tại: "+diadiem+" - Người tạo: "+user;
     db.collection("attendance").doc(id).get().then((doc) => {
       if (doc.exists) {
         var name = doc.data().listsv;
@@ -1366,7 +1435,7 @@ function getChatroomId(user1,user2){
                   chatRoomId: "",
                   users: []
                 }
-                newChatroom.chatRoomId = user1+"_"+user2;
+                newChatroom.chatRoomId = user2+"_"+user1;
                 newChatroom.users[0] = user1;
                 newChatroom.users[1] = user2;
 
@@ -1404,7 +1473,7 @@ function Danhsachlop() {
                     }
                 });
             })
-  }else if(cookie.rule == 2){
+  }else if(cookie.rule == 2 || cookie.rule == 1){
     var firestore = firebase.firestore();
             firestore.collection("classRoom").where("dssv", "array-contains", cookie.id)
             .get()
