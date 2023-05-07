@@ -128,7 +128,8 @@ link4.addEventListener('click', function(event) {
   document.getElementById("xoalophoc").hidden = true;
   document.getElementById("choncansu").hidden = true;
   document.getElementById("xoasv").hidden = true;
-  Danhsachlop();
+  danhsachbanbe();
+  danhsachhoithoai();
 });
 
 const link5 = document.getElementById('dellassroom');
@@ -988,7 +989,7 @@ var ctx2 = document.getElementById('myChart');
 
   function xoabieudo(){
     ctx.clearRect(0, 0, ctx.width, ctx.height);
-    console.log("đã xóa biểu đồ");
+    // console.log("đã xóa biểu đồ");
   };
 
   function vebieudo(tenhoatdong, soluong){
@@ -1355,7 +1356,7 @@ function RecoveryPassword(){
         docRef.get().then(function(doc) {
               swal(
                 doc.data().name,
-                "Nội dung: "+doc.data().content +"</br>Thời gian gửi thông báo: "+doc.data().time+"</br>File đính kèm :",
+                "Nội dung: "+doc.data().content+"</div><div>Thông báo lúc: "+doc.data().time+"</div><div>File đính kèm: <a target='_blank' href=/dashboard/uploads/files/"+doc.data().file+">"+doc.data().file+"</a>",
                 ''
               )
 
@@ -1502,17 +1503,19 @@ function getChatroomId(user1,user2){
                 cookie.chat = newChatroom.chatRoomId;
                 console.log("Đã tạo chat room với id: "+cookie.chat);
                 ChatRoom(cookie.chat);
-              }
+              }else{
                 querySnapshot.forEach((doc) => {
-                    var id = doc.id;
-                    ChatRoom(id);
-                });
+                  cookie.chat = doc.id;
+                  ChatRoom(cookie.chat);
+              });
+              }
+
   })
 }
 //Kết thúc lấy ID của 2 người dùng//
 
 // Lấy danh sách sinh viên //
-function Danhsachlop() {
+function danhsachbanbe() {
   friendList.innerHTML="";
   if(cookie.rule == 0){
     var firestore = firebase.firestore();
@@ -1557,7 +1560,7 @@ function Danhsachlop() {
 }
 //Kết thúc Lấy danh sách sinh viên //
 
-var friendList = document.getElementById("friend-list-ul");
+var friendList = document.getElementById("danhsachbanbe");
 
 // Lấy tham chiếu đến danh sách bạn bè
 
@@ -1583,6 +1586,60 @@ function removeFriend() {
       // friendList.removeChild(liList[i]);
   }
 }
+
+// Lấy danh sách các cuộc hội thoại //
+  function danhsachhoithoai(){
+    var chatList = document.getElementById("danhsachhoithoai");
+    db.collection("chatRoom").where("users", "array-contains", cookie.email)
+      .onSnapshot(function(querySnapshot){
+        chatList.innerHTML = "";
+        querySnapshot.forEach(function(doc){
+          var data = doc.data(); // data có user,idchat
+          var email;
+          if (data.users[0] == cookie.email){
+            email = data.users[1];
+          }else{
+            email = data.users[0];
+          }
+          var db = firebase.firestore();
+            var usersRef = db.collection("info");
+            // Lấy document với trường email cụ thể
+            usersRef.where("email", "==", email)
+              .get()
+              .then(function(querySnapshot) {
+                querySnapshot.forEach(function(doc) {
+                  // Doc là document tìm thấy
+                  // console.log("Document tìm thấy: ", doc.id, " => ", doc.data());
+                  var data2 = doc.data();
+                  var li = document.createElement("li");
+                  li.innerText = data2.name;
+                  li.id = data2.email;
+                   li.addEventListener('click', () => {
+                     alert("ID người nhận: "+li.id);
+                   });
+                  chatList.appendChild(li);
+                });
+              })
+              .catch(function(error) {
+                console.log("Lỗi khi lấy document: ", error);
+              });
+        })
+      })
+  }
+
+  // kết thúc lấy danh sách hội thoại
+
+  function getLastMessage(id){
+    var lastMessage;
+    var docRef2 = db.collection("chatRoom").doc(id).collection("chats");
+    docRef2.orderBy("time", "asc").limit(1).get().then(function(querySnapshot) {
+      querySnapshot.forEach(function(doc) {
+          lastMessage = doc.data().message;
+      });
+    });
+    return lastMessage;
+  }
+
 
 
 // End chatroom
