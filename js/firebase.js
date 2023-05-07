@@ -202,6 +202,13 @@ for (var i = 0; i < datacookie.length; i++) {
   if (datacookiee.indexOf("rule=") == 0) {
     var rule = datacookiee.substring("rule=".length, datacookiee.length);
     cookie.rule = rule;
+    if (rule == 0){
+      document.getElementById("showvaitro").innerHTML = "Giảng viên";
+    }else if(rule == 1){
+      document.getElementById("showvaitro").innerHTML = "Cán sự";
+    }else{
+      document.getElementById("showvaitro").innerHTML = "Sinh viên";
+    }
   }
   if (datacookiee.indexOf("email=") == 0) {
     var email = datacookiee.substring("email=".length, datacookiee.length);
@@ -902,40 +909,45 @@ function GetData2(){
 }
 
 function DeleteClassroom(id){
-            // Lấy tất cả các ô kiểm tra
-            var checkboxes = document.getElementsByClassName("checkbox");
+  if (confirm("Bạn có chắc muốn xóa nội dung này?")) {
+                // Lấy tất cả các ô kiểm tra
+                var checkboxes = document.getElementsByClassName("checkbox");
     
-            // Lưu trữ các hàng được chọn
-            var selectedRows = [];
-          
-            // Duyệt qua tất cả các ô kiểm tra và kiểm tra xem các ô kiểm tra nào được chọn
-            for (var i = 0; i < checkboxes.length; i++) {
-              if (checkboxes[i].checked) {
-                // Lấy hàng tương ứng với ô kiểm tra được chọn
-                var selectedRow = checkboxes[i].parentNode.parentNode;
-          
-                // Lưu trữ hàng được chọn
-                selectedRows.push(selectedRow);
-              }
-            }
-          
-            // Lấy dữ liệu từ các hàng được chọn
-            for (var j = 0; j < selectedRows.length; j++) {
-              var id = selectedRows[j].cells[1].textContent;
-              // Get a reference to the document to be deleted
-              db.collection("classRoom").doc(id).delete().then(function() {
-                  console.log("Document successfully deleted!");
-              }).catch(function(error) {
-                  console.error("Error removing document: ", error);
-              });
-            }
+                // Lưu trữ các hàng được chọn
+                var selectedRows = [];
+              
+                // Duyệt qua tất cả các ô kiểm tra và kiểm tra xem các ô kiểm tra nào được chọn
+                for (var i = 0; i < checkboxes.length; i++) {
+                  if (checkboxes[i].checked) {
+                    // Lấy hàng tương ứng với ô kiểm tra được chọn
+                    var selectedRow = checkboxes[i].parentNode.parentNode;
+              
+                    // Lưu trữ hàng được chọn
+                    selectedRows.push(selectedRow);
+                  }
+                }
+              
+                // Lấy dữ liệu từ các hàng được chọn
+                for (var j = 0; j < selectedRows.length; j++) {
+                  var id = selectedRows[j].cells[1].textContent;
+                  // Get a reference to the document to be deleted
+                  db.collection("classRoom").doc(id).delete().then(function() {
+                      console.log("Document successfully deleted!");
+                  }).catch(function(error) {
+                      console.error("Error removing document: ", error);
+                  });
+                }
+  } else {
+    console.log("Thao tác bị hủy");
+  }
+
             
 }
 
 
 let tenhoatdong = [];
 let soluong = [];
-// vebieudo(tenhoatdong,soluong);
+
 
 function GetDataTable(){
   db.collection("attendance").onSnapshot((querySnapshot) => {
@@ -965,52 +977,63 @@ function GetDataTable(){
       });
       // Initialize tablesorter
       $("#diemdanh").tablesorter();
-      myChart.update();
+      xoabieudo();
+      vebieudo(tenhoatdong, soluong);
+      tenhoatdong = [];
+      soluong = [];
     });
-
 }
+var ctx = document.getElementById('myChart').getContext('2d');
+var ctx2 = document.getElementById('myChart');
 
+  function xoabieudo(){
+    ctx.clearRect(0, 0, ctx.width, ctx.height);
+    console.log("đã xóa biểu đồ");
+  };
 
-
-  var ctx = document.getElementById('myChart').getContext('2d');
-  var myChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-      labels: tenhoatdong,
-      datasets: [{
-          label: 'Số lượng tham gia',
-          data: soluong,
-          backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
-      }]
-  },
-  options: {
-      scales: {
-          yAxes: [{
-              ticks: {
-                  beginAtZero: true
-              }
+  function vebieudo(tenhoatdong, soluong){
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: tenhoatdong,
+          datasets: [{
+              label: 'Số lượng tham gia',
+              data: soluong,
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)'
+              ],
+              borderColor: [
+                  'rgba(255, 99, 132, 1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
           }]
       },
-      responsive: false, // thêm dòng này để tắt khả năng tương thích của biểu đồ với màn hình
-      maintainAspectRatio: false // thêm dòng này để vô hiệu hóa tỷ lệ giữa chiều rộng và chiều cao
+      options: {
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+          },
+          responsive: false, // thêm dòng này để tắt khả năng tương thích của biểu đồ với màn hình
+          maintainAspectRatio: false // thêm dòng này để vô hiệu hóa tỷ lệ giữa chiều rộng và chiều cao
+      }
+    });
   }
-});
+
+  
+  
 
 
 
@@ -1330,28 +1353,35 @@ function RecoveryPassword(){
         const itemId = this.id;
         var docRef = firebase.firestore().collection("notification").doc(itemId);
         docRef.get().then(function(doc) {
-      // Tạo phần tử div để chứa bảng thông báo
-      var popup = document.createElement('div');
+              swal(
+                doc.data().name,
+                "Nội dung: "+doc.data().content +"</br>Thời gian gửi thông báo: "+doc.data().time+"</br>File đính kèm :",
+                ''
+              )
 
-      // Thêm nội dung cho bảng thông báo
-      var html = "<div>Nội dung: "+doc.data().content+"</div><div>Thông báo lúc: "+doc.data().time+"</div><div>File đính kèm: <a target='_blank' href=/dashboard/uploads/files/"+doc.data().file+">"+doc.data().file+"</a></div>";
-      popup.innerHTML = html;
+
+      // // Tạo phần tử div để chứa bảng thông báo
+      // var popup = document.createElement('div');
+
+      // // Thêm nội dung cho bảng thông báo
+      // var html = "<div>Nội dung: "+doc.data().content+"</div><div>Thông báo lúc: "+doc.data().time+"</div><div>File đính kèm: <a target='_blank' href=/dashboard/uploads/files/"+doc.data().file+">"+doc.data().file+"</a></div>";
+      // popup.innerHTML = html;
  
-      // Thêm nút "OK" vào bảng thông báo
-      var okButton = document.createElement('button');
-      okButton.innerHTML = 'Đóng thông báo';
-      popup.appendChild(okButton);
+      // // Thêm nút "OK" vào bảng thông báo
+      // var okButton = document.createElement('button');
+      // okButton.innerHTML = 'Đóng thông báo';
+      // popup.appendChild(okButton);
 
-      // Thêm lớp CSS cho bảng thông báo
-      popup.classList.add('popup');
+      // // Thêm lớp CSS cho bảng thông báo
+      // popup.classList.add('popup');
 
-      // Thêm bảng thông báo vào trang web
-      document.body.appendChild(popup);
+      // // Thêm bảng thông báo vào trang web
+      // document.body.appendChild(popup);
 
-      // Xử lý sự kiện click cho nút "OK"
-      okButton.addEventListener('click', function() {
-        popup.remove(); // Xóa bảng thông báo khỏi trang web
-      });
+      // // Xử lý sự kiện click cho nút "OK"
+      // okButton.addEventListener('click', function() {
+      //   popup.remove(); // Xóa bảng thông báo khỏi trang web
+      // });
         })
       });
     }
@@ -1363,6 +1393,7 @@ Notification();
 
 
 
+// chaatRoom //
 
 
 
@@ -1388,21 +1419,26 @@ function sendMessage(mess,id){
   cookie.chat = id;
 }
 
-var input = document.getElementById("inputChat");
-
-input.addEventListener("keydown", function(event) {
-  if (event.keyCode === 13) { // Kiểm tra xem người dùng đã nhấn phím Enter
-    event.preventDefault(); // Ngăn chặn trang web chuyển đến trang khác khi nhấn Enter
-    actionMessage();
-  }
-});
 
 
-const btnSend = document.getElementById("btnSend");
-btnSend.addEventListener("click", function(event){
-  actionMessage();
-})
+// xử lý khung nhập liệu//
+    var input = document.getElementById("inputChat");
 
+    input.addEventListener("keydown", function(event) {
+      if (event.keyCode === 13) { // Kiểm tra xem người dùng đã nhấn phím Enter
+        event.preventDefault(); // Ngăn chặn trang web chuyển đến trang khác khi nhấn Enter
+        actionMessage();
+      }
+    });
+
+
+    const btnSend = document.getElementById("btnSend");
+    btnSend.addEventListener("click", function(event){
+      actionMessage();
+    });
+// kết thúc xử lý khung nhập liệu //
+
+// xử lý nội dung tin nhắn được nhập //
   function actionMessage(){
     const inputChat = document.getElementById('inputChat').value;
     const testvalue = document.getElementById('inputChat');
@@ -1420,12 +1456,14 @@ btnSend.addEventListener("click", function(event){
     testvalue.value = "";
   }
 
-function SaveMessage(mess){
-  let id = cookie.chat;
-  let collectionRef = firebase.firestore().collection("chatRoom").doc(id).collection("chats");
-  collectionRef.add(mess);
-}
+  function SaveMessage(mess){
+    let id = cookie.chat;
+    let collectionRef = firebase.firestore().collection("chatRoom").doc(id).collection("chats");
+    collectionRef.add(mess);
+  }
+// kết thúc xử lý dữ liệu được nhập
 
+//Lấy dữ liệu về từ firebase///
 function ChatRoom(id){
       var firestore = firebase.firestore();
       var docRef2 = firestore.collection("chatRoom").doc(id).collection("chats");
@@ -1442,9 +1480,8 @@ function ChatRoom(id){
         html = "";
       })
 }
-
-
-
+// Kết thúc Lấy dữ liệu về từ firebase///
+//Lấy ID của 2 người dùng//
 function getChatroomId(user1,user2){
             var firestore = firebase.firestore();
             firestore.collection("chatRoom").where("chatRoomId", "in", [user1+"_"+user2, user2+"_"+user1])
@@ -1456,6 +1493,7 @@ function getChatroomId(user1,user2){
                   chatRoomId: "",
                   users: []
                 }
+
                 newChatroom.chatRoomId = user2+"_"+user1;
                 newChatroom.users[0] = user1;
                 newChatroom.users[1] = user2;
@@ -1471,9 +1509,9 @@ function getChatroomId(user1,user2){
                 });
   })
 }
+//Kết thúc lấy ID của 2 người dùng//
 
-// ChatRoom("phanbaonhanctu@gmail.com_nhanb1805900@student.ctu.edu.vn");
-
+// Lấy danh sách sinh viên //
 function Danhsachlop() {
   friendList.innerHTML="";
   if(cookie.rule == 0){
@@ -1500,7 +1538,6 @@ function Danhsachlop() {
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
-                    console.log(doc.id);
                     const data = doc.data();
                     firebase.firestore().collection("info").doc(data.idteacher).get().then(function(doc2) {
                       var data2 = doc2.data();
@@ -1518,6 +1555,7 @@ function Danhsachlop() {
             })
   }
 }
+//Kết thúc Lấy danh sách sinh viên //
 
 var friendList = document.getElementById("friend-list-ul");
 
@@ -1547,20 +1585,4 @@ function removeFriend() {
 }
 
 
-
-// Sửa tên bạn bè trong danh sách
-function editFriend(oldName, newName) {
-  var liList = friendList.getElementsByTagName("li");
-  for (var i = 0; i < liList.length; i++) {
-    if (liList[i].innerText === oldName) {
-      liList[i].innerText = newName;
-      break;
-    }
-  }
-}
-
-// Sử dụng các hàm để thêm, xóa hoặc sửa đổi bạn bè trong danh sách
-// addFriend("John");
-// addFriend("Jane");
-// removeFriend("John");
-editFriend("Test Teacher", "Test Teacher2");
+// End chatroom

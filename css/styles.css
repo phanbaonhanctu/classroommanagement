@@ -11388,12 +11388,12 @@ body {
   font-size: 20px;
 }
 
-#btnSend{
+/* #btnSend{
   background-color: #6f42c1;
   border-radius: 10%;
   height: 44px;
   width: 10%;
-}
+} */
 
 .friend-list {
   position: fixed;

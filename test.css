@@ -17,9 +17,9 @@ body {
     white-space: nowrap;
     margin: 10px;
   }
-  img {
+  /* img {
     width: 200px;
-  }
+  } */
   input[type="text"] {
     padding: 12px 20px;
     display: inline-block;
