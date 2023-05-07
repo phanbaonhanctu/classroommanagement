@@ -1271,16 +1271,37 @@ function RecoveryPassword(){
   };
   getavarta(cookie.id);
   function Notification(){
+    const list_class = [];
+    if (cookie.rule == 0){
+      var getclassid = db.collection("classRoom").where("idteacher", "==", cookie.id);
+      getclassid.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          list_class.push(doc.id);
+        })
+      });
+    }else{
+      var getclassid = db.collection("classRoom").where("dssv", "array-contains", cookie.id);
+      getclassid.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          list_class.push(doc.id);
+        })
+      });
+    }
     const formtb = document.getElementById("notification");
     let html = '';
-    var tb = db.collection("notification");
+    var tb = db.collection("notification")
     tb.onSnapshot((querySnapshot) => {
       Delnotification();
       querySnapshot.forEach((doc) => {
         var thongbao = doc.data();
-        thonbao.content = thongbao.content;
-        html += '<li class="header_notify-item" id="'+doc.id+'">'+'<img src="/dashboard/uploads/avatar/'+thonbao.avarta+'" alt="" width="30px" height="30px"><p onclick="Showthongbaonoi()">&nbsp;'+thongbao.name+'</p></li>';
-      });
+        for (i=0;i<list_class.length;i++){
+          if(list_class[i] == thongbao.sent_to){
+            thonbao.content = thongbao.content;
+            html += '<li class="header_notify-item" id="'+doc.id+'">'+'<img src="/dashboard/uploads/avatar/'+thonbao.avarta+'" alt="" width="30px" height="30px"><p onclick="Showthongbaonoi()">&nbsp;'+thongbao.name+'</p></li>';  
+          }else{
+          }
+        }
+});
       formtb.innerHTML = html;
       html = "";
     })
