@@ -224,9 +224,6 @@ for (var i = 0; i < datacookie.length; i++) {
   }
 }
 
-let create_classroom;
-let delete_classroom;
-
 
 if (cookie.rule == 2){
   document.getElementById("create_classroom").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
