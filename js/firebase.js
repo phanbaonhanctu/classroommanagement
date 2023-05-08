@@ -64,6 +64,7 @@ link.addEventListener('click', function(event) {
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
+  document.getElementById("choncansu").hidden = true;
   document.getElementById("xoasv").hidden = true;
 });
 
@@ -79,6 +80,7 @@ link1.addEventListener('click', function(event) {
   document.getElementById("myChart").hidden = false;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
+  document.getElementById("choncansu").hidden = true;
   document.getElementById("xoasv").hidden = true;
 });
 
@@ -95,6 +97,7 @@ link2.addEventListener('click', function(event) {
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
   document.getElementById("xoasv").hidden = true;
+  document.getElementById("choncansu").hidden = true;
   Showinfo();
 });
 
@@ -242,6 +245,7 @@ if (create_classroom == false){
   notification2.innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
   document.getElementById("xoasv").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
   document.getElementById("choncansu").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+  document.getElementById("create_diemdanh").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
 }
 
 
