@@ -60,7 +60,7 @@ link.addEventListener('click', function(event) {
   document.getElementById("xemchitiet").hidden = true;
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("edit_thongtindangnhap").hidden = true;
-  document.getElementById("sent_message").hidden = true;
+  document.getElementById("sent_notification").hidden = true;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
@@ -76,7 +76,7 @@ link1.addEventListener('click', function(event) {
   document.getElementById("xemchitiet").hidden = true;
   document.getElementById("create_diemdanh").hidden = false;
   document.getElementById("edit_thongtindangnhap").hidden = true;
-  document.getElementById("sent_message").hidden = true;
+  document.getElementById("sent_notification").hidden = true;
   document.getElementById("myChart").hidden = false;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
@@ -92,7 +92,7 @@ link2.addEventListener('click', function(event) {
   document.getElementById("xemchitiet").hidden = true;
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("edit_thongtindangnhap").hidden = false;
-  document.getElementById("sent_message").hidden = true;
+  document.getElementById("sent_notification").hidden = true;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
@@ -109,7 +109,7 @@ link3.addEventListener('click', function(event) {
   document.getElementById("xemchitiet").hidden = true;
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("edit_thongtindangnhap").hidden = true;
-  document.getElementById("sent_message").hidden = false;
+  document.getElementById("sent_notification").hidden = false;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
@@ -125,7 +125,7 @@ link4.addEventListener('click', function(event) {
   document.getElementById("xemchitiet").hidden = true;
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("edit_thongtindangnhap").hidden = true;
-  document.getElementById("sent_message").hidden = true;
+  document.getElementById("sent_notification").hidden = true;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = false;
   document.getElementById("xoalophoc").hidden = true;
@@ -143,7 +143,7 @@ link5.addEventListener('click', function(event) {
   document.getElementById("xemchitiet").hidden = true;
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("edit_thongtindangnhap").hidden = true;
-  document.getElementById("sent_message").hidden = true;
+  document.getElementById("sent_notification").hidden = true;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = false;
@@ -160,7 +160,7 @@ link6.addEventListener('click', function(event) {
   document.getElementById("xemchitiet").hidden = true;
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("edit_thongtindangnhap").hidden = true;
-  document.getElementById("sent_message").hidden = true;
+  document.getElementById("sent_notification").hidden = true;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
@@ -177,7 +177,7 @@ link7.addEventListener('click', function(event) {
   document.getElementById("xemchitiet").hidden = true;
   document.getElementById("create_diemdanh").hidden = true;
   document.getElementById("edit_thongtindangnhap").hidden = true;
-  document.getElementById("sent_message").hidden = true;
+  document.getElementById("sent_notification").hidden = true;
   document.getElementById("myChart").hidden = true;
   document.getElementById("formchatbox").hidden = true;
   document.getElementById("xoalophoc").hidden = true;
@@ -228,24 +228,18 @@ let create_classroom;
 let delete_classroom;
 
 
-
-if (cookie.rule == 0){
-    create_classroom = true;
-    delete_classroom = true;
-}else{
-    create_classroom = false;
-    delete_classroom = false;
-}
-
-
-if (create_classroom == false){
-  var notification = document.getElementById("create_classroom");
-  notification.innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
-  var notification2 = document.getElementById("xoalophoc");
-  notification2.innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+if (cookie.rule == 2){
+  document.getElementById("create_classroom").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+  document.getElementById("xoalophoc").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
   document.getElementById("xoasv").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
   document.getElementById("choncansu").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+  // document.getElementById("sent_notification").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
   document.getElementById("create_diemdanh").innerHTML = "";
+}else if(cookie.rule == 1){
+  document.getElementById("create_classroom").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+  document.getElementById("xoalophoc").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+  document.getElementById("xoasv").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+  document.getElementById("choncansu").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
 }
 
 
@@ -321,7 +315,7 @@ function Saveinfo(){
   newinfoStudent.email = document.getElementById("outputEmail").value;
   newinfoStudent.age = document.getElementById("outputDay").value;
   SaveDatabase("info",newinfoStudent.mssv,newinfoStudent);
-  alert("Lưu thành công");
+  showAlert("Lưu thành công");
 
   document.getElementById("outputMssv").disabled = true;
   document.getElementById("outputName").disabled = true;
@@ -462,42 +456,55 @@ function GetID(){
  
 
   function LuuThongBao(){
-    let message = {
-      time: "",
-      content: "",
-      sent_from: "",
-      sent_to: "",
-      name: "",
-      file: ""
-    };
-
-    const fileInput = document.getElementById('fileInput2');
-
-    const filePath = fileInput.value.split("\\").pop();
-    message.file = filePath;
-    const file = fileInput.files[0];
-    const formData = new FormData();
-    formData.append('file', file);
-  
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'uploadfile.php');
-    xhr.onload = function() {
-    if (xhr.status === 200) {
-        console.log('Upload successful!');
-    } else {
-        console.log('Upload failed!');
+    if (cookie.rule == 2){
+        showAlert("Bạn chưa được phép gửi thông báo");
+    }else{
+      if (checkChatContent(document.getElementById("title_message").value)
+          && checkChatContent(document.getElementById("txt_message").value)
+          && document.getElementById("myDropdown1").value != "null") {
+        // Nội dung chat không rỗng
+        // Xử lý nội dung chat ở đây
+        let message = {
+          time: "",
+          content: "",
+          sent_from: "",
+          sent_to: "",
+          name: "",
+          file: ""
+        };
+    
+        const fileInput = document.getElementById('fileInput2');
+    
+        const filePath = fileInput.value.split("\\").pop();
+        message.file = filePath;
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+      
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'uploadfile.php');
+        xhr.onload = function() {
+        if (xhr.status === 200) {
+            console.log('Upload successful!');
+        } else {
+            console.log('Upload failed!');
+        }
+        };
+        xhr.send(formData);
+    
+        message.time = Gettime();
+        message.name = document.getElementById("title_message").value;
+        message.content = document.getElementById("txt_message").value;
+        message.sent_from = cookie.id;
+        message.sent_to = document.getElementById("myDropdown1").value;
+    
+        SaveDatabaseRandomID("notification",message);
+        showAlert("Lưu thông báo thành công");
+      } else {
+        // Nội dung chat rỗng
+        showAlert('Vui lòng điền tên thông báo, chọn lớp học và nhập nội dung!');
+      }
     }
-    };
-    xhr.send(formData);
-
-    message.time = Gettime();
-    message.name = document.getElementById("title_message").value;
-    message.content = document.getElementById("txt_message").value;
-    message.sent_from = cookie.id;
-    message.sent_to = document.getElementById("myDropdown1").value;
-
-    SaveDatabaseRandomID("notification",message);
-    alert("Lưu thông báo thành công");
   }
 
 
@@ -640,7 +647,7 @@ function GetID(){
           rule: "2"
       })
       }
-      alert("Cập nhật thành công!");
+      showAlert("Cập nhật thành công!");
   }
 
   function DeleteSV(list){
@@ -651,7 +658,7 @@ function GetID(){
         dssv: list
       }
     )
-    alert("Xóa thành công!");
+    showAlert("Xóa thành công!");
   }
 
   function GetSvSelected(){
@@ -688,68 +695,82 @@ function GetID(){
     
 
   function CreateDiemdanh(){
-    if(cookie.rule == 2){
-      alert("Bạn không có quyền tạo hoạt động điểm danh");
-    }else{
       var name = document.getElementById("inputdiemdanhname").value;
       var diadiem = document.getElementById("inputdiadiem").value;
       var time = Gettime();
       var listsv = [];
-              // Lấy tất cả các ô kiểm tra
-              var checkboxes = document.getElementsByClassName("checkbox");
+      if (checkChatContent(name) && checkChatContent(diadiem)) {
+        // Nội dung chat không rỗng
+        // Xử lý nội dung chat ở đây
+        // Lấy tất cả các ô kiểm tra
+        var checkboxes = document.getElementsByClassName("checkbox");
       
-              // Lưu trữ các hàng được chọn
-              var selectedRows = [];
-            
-              // Duyệt qua tất cả các ô kiểm tra và kiểm tra xem các ô kiểm tra nào được chọn
-              for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                  // Lấy hàng tương ứng với ô kiểm tra được chọn
-                  var selectedRow = checkboxes[i].parentNode.parentNode;
-            
-                  // Lưu trữ hàng được chọn
-                  selectedRows.push(selectedRow);
-                }
-              }
-            
-              // Lấy dữ liệu từ các hàng được chọn
-              for (var j = 0; j < selectedRows.length; j++) {
-                var masv = selectedRows[j].cells[0].textContent;
-                console.log(masv);
-                listsv.push(masv);
-              }
-  
-              let newdiemdanh = {
-                user_create: cookie.id,
-                name: name,
-                time: time,
-                listsv: listsv,
-                diadiem: diadiem,
-              };
-              SaveDatabaseRandomID("attendance",newdiemdanh);
-              alert("Tạo hoạt động điểm danh thành công");
-              document.getElementById("inputdiemdanhname").value = "";
-              document.getElementById("inputdiadiem").value = "";
-    }
+        // Lưu trữ các hàng được chọn
+        var selectedRows = [];
+      
+        // Duyệt qua tất cả các ô kiểm tra và kiểm tra xem các ô kiểm tra nào được chọn
+        for (var i = 0; i < checkboxes.length; i++) {
+          if (checkboxes[i].checked) {
+            // Lấy hàng tương ứng với ô kiểm tra được chọn
+            var selectedRow = checkboxes[i].parentNode.parentNode;
+      
+            // Lưu trữ hàng được chọn
+            selectedRows.push(selectedRow);
+          }
+        }
+      
+        // Lấy dữ liệu từ các hàng được chọn
+        for (var j = 0; j < selectedRows.length; j++) {
+          var masv = selectedRows[j].cells[0].textContent;
+          console.log(masv);
+          listsv.push(masv);
+        }
 
+        let newdiemdanh = {
+          user_create: cookie.id,
+          name: name,
+          time: time,
+          listsv: listsv,
+          diadiem: diadiem,
+        };
+        SaveDatabaseRandomID("attendance",newdiemdanh);
+        showAlert("Tạo hoạt động điểm danh thành công");
+        document.getElementById("inputdiemdanhname").value = "";
+        document.getElementById("inputdiadiem").value = "";
+      } else {
+        // Nội dung chat rỗng
+        showAlert('Vui lòng nhập tên hoạt động và địa điểm!');
+      }
+              
   }
 
   function readFile() {
-
-    var file = document.getElementById("input").files[0];
-    var reader = new FileReader();
-    reader.onload = function (e) {
-      var data = e.target.result;
-      var workbook = XLSX.read(data, { type: "binary" });
-      var sheetName = workbook.SheetNames[0];
-      var worksheet = workbook.Sheets[sheetName];
-      var jsonData = XLSX.utils.sheet_to_json(worksheet, { 
-        raw: false, // Trả về các giá trị không chuyển đổi sang định dạng khác
-        dateNF: "dd-mm-yyyy", // Định dạng ngày tháng (nếu có) để giữ nguyên định dạng
-        });
-      displayData(jsonData);
-    };
-    reader.readAsBinaryString(file);
+    if (checkChatContent(document.getElementById("inputClassname").value) && checkChatContent(document.getElementById("inputClasscontent").value)) {
+      // Nội dung không rỗng
+      // Xử lý nội dung ở đây
+      var file = document.getElementById("inputDssv").files[0];
+      var file1 = document.getElementById("inputDssv");
+      if (file1.value === "") {
+        showAlert("Vui lòng chọn tệp tin");
+      } else {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var data = e.target.result;
+          var workbook = XLSX.read(data, { type: "binary" });
+          var sheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[sheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { 
+            raw: false, // Trả về các giá trị không chuyển đổi sang định dạng khác
+            dateNF: "dd-mm-yyyy", // Định dạng ngày tháng (nếu có) để giữ nguyên định dạng
+            });
+          displayData(jsonData);
+        };
+        reader.readAsBinaryString(file);
+      }
+    } else {
+      // Nội dung rỗng
+      showAlert('Vui lòng nhập đầy đủ tên lớp học và mô tả');
+    }
   }
   
   function displayData(data) {
@@ -806,7 +827,7 @@ function GetID(){
         SaveDatabase("info",newStudent.mssv,newStudent);
     }
     SaveDatabaseRandomID("classRoom",newClassroom);
-    alert("Tạo lớp học thành công. Tài khoản mặc định cho sinh viên là email với mật khẩu 123456");
+    showAlert("Tạo lớp học thành công. Tài khoản mặc định cho sinh viên là email với mật khẩu 123456");
     document.getElementById("inputClassname").value = "";
     document.getElementById("inputClasscontent").value = "";
     document.getElementById("create_classroom").hidden = true;
@@ -1208,14 +1229,14 @@ function Register(){
     .then((userCredential) => {
       // Signed in 
       var user = userCredential.user;
-      alert('Register successful!');
+      showAlert('Register successful!');
       window.location.href = '/login/login.html';
       // ...
     })
     .catch((error) => {
       var errorCode = error.code;
       var errorMessage = error.message;
-      alert('Register not sucessful!');
+      showAlert('Register not sucessful!');
       // ..
     });
 
@@ -1248,7 +1269,7 @@ function DelCookie(){
     document.cookie = `${cookieName1}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     const cookieName2 = "id";
     document.cookie = `${cookieName2}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    alert('Logout successful!');
+    showAlert('Logout successful!');
 }
 
 
@@ -1278,7 +1299,7 @@ function Checklogin(){
     .catch((error) => {
       var errorCode = error.code;
       var errorMessage = error.message;
-      alert('Invalid username or password.');
+      showAlert('Invalid username or password.');
     });
 }
 
@@ -1287,10 +1308,10 @@ function RecoveryPassword(){
     var user = document.getElementById("inputEmail");
     var email = user.value;
     firebase.auth().sendPasswordResetEmail(email).then(function() {
-        alert('Email sent successful!');
+      showAlert('Email sent successful!');
     })
     .catch(function(error) {
-        alert('Can not find email account');
+      showAlert('Can not find email account');
     });
 }
 
@@ -1445,21 +1466,42 @@ function sendMessage(mess,id){
 // kết thúc xử lý khung nhập liệu //
 
 // xử lý nội dung tin nhắn được nhập //
+  function checkChatContent(content) {
+    // Loại bỏ các khoảng trắng ở đầu và cuối chuỗi
+    const trimmedContent = content.trim();
+    // Kiểm tra độ dài của chuỗi sau khi đã loại bỏ khoảng trắng
+    if (trimmedContent.length === 0) {
+      return false; // Nội dung chat rỗng
+    } else {
+      return true; // Nội dung chat không rỗng
+    }
+  }
+
+
+
   function actionMessage(){
     const inputChat = document.getElementById('inputChat').value;
     const testvalue = document.getElementById('inputChat');
-    let newMessage = {
-      message: "",
-      sendBy: "",
-      time: ""
-    };
-  
-    newMessage.message = inputChat;
-    var now = new Date();
-    newMessage.time = now.getTime();
-    newMessage.sendBy = cookie.email;
-    SaveMessage(newMessage);
-    testvalue.value = "";
+    if (checkChatContent(inputChat)) {
+      // Nội dung chat không rỗng
+      // Xử lý nội dung chat ở đây
+      let newMessage = {
+        message: "",
+        sendBy: "",
+        time: ""
+      };
+    
+      newMessage.message = inputChat;
+      var now = new Date();
+      newMessage.time = now.getTime();
+      newMessage.sendBy = cookie.email;
+      SaveMessage(newMessage);
+      testvalue.value = "";
+    } else {
+      // Nội dung chat rỗng
+      testvalue.value = "";
+      showAlert('Nội dung chat không được để trống');
+    }
   }
 
   function SaveMessage(mess){
@@ -1522,45 +1564,60 @@ function getChatroomId(user1,user2){
 // Lấy danh sách sinh viên //
 function danhsachbanbe() {
   friendList.innerHTML="";
+  let listFriend = [];
   if(cookie.rule == 0){
     var firestore = firebase.firestore();
             firestore.collection("classRoom").where("idteacher", "==", cookie.id)
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
-                    console.log(doc.id);
                     const data = doc.data();
                     for(i=0;i<data.dssv.length;i++){
-                      var mssv = data.dssv[i];
-                      var docRef = firebase.firestore().collection("info").doc(mssv);
-                      docRef.get().then(function(doc1) {
-                      var data1 = doc1.data();
-                      addFriend(data1.name,data1.email);
-                    });
+                        if (listFriend.includes(data.dssv[i])) {
+                          console.log('Sinh viên đã tồn tại');
+                        } else {
+                          listFriend.push(data.dssv[i]);
+                          var mssv = data.dssv[i];
+                          var docRef = firebase.firestore().collection("info").doc(mssv);
+                          docRef.get().then(function(doc1) {
+                          var data1 = doc1.data();
+                          addFriend(data1.name,data1.email);
+                          });
+                        }
                     }
                 });
             })
   }else if(cookie.rule == 2 || cookie.rule == 1){
-    var firestore = firebase.firestore();
-            firestore.collection("classRoom").where("dssv", "array-contains", cookie.id)
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    firebase.firestore().collection("info").doc(data.idteacher).get().then(function(doc2) {
-                      var data2 = doc2.data();
-                      addFriend(data2.name,data2.email);
-                    });
-                    for(i=0;i<data.dssv.length;i++){
-                      var mssv = data.dssv[i];
-                      var docRef = firebase.firestore().collection("info").doc(mssv);
-                    docRef.get().then(function(doc1) {
-                      var data1 = doc1.data();
-                      addFriend(data1.name,data1.email);
-                    });
-                    }
-                });
-            })
+  var firestore = firebase.firestore();
+  firestore.collection("classRoom").where("dssv", "array-contains", cookie.id)
+    .get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          firebase.firestore().collection("info").doc(data.idteacher).get().then(function(doc2) {
+            if (listFriend.includes(data.idteacher)) {
+              console.log('Sinh viên đã tồn tại');
+            } else {
+              listFriend.push(data.idteacher);
+              var data2 = doc2.data();
+              addFriend(data2.name,data2.email);
+            }
+          });
+
+          for(i=0;i<data.dssv.length;i++){
+            if (listFriend.includes(data.dssv[i])) {
+              console.log('Sinh viên đã tồn tại');
+            } else {
+              listFriend.push(data.dssv[i]);
+              var mssv = data.dssv[i];
+              var docRef = firebase.firestore().collection("info").doc(mssv);
+              docRef.get().then(function(doc1) {
+                var data1 = doc1.data();
+                addFriend(data1.name,data1.email);
+              });
+            }
+          }
+      });
+    })
   }
 }
 //Kết thúc Lấy danh sách sinh viên //
@@ -1664,6 +1721,7 @@ function removeFriend() {
       })
   }
   // kết thúc lấy danh sách hội thoại
+
   function getLastMessage(id){
     var lastMessage;
     var docRef2 = db.collection("chatRoom").doc(id).collection("chats");
@@ -1673,6 +1731,14 @@ function removeFriend() {
       });
     });
     return lastMessage;
+  }
+
+  function showAlert(message) {
+    swal(
+      '',
+      message,
+      ''
+    )
   }
 
 

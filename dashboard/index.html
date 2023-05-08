@@ -318,6 +318,7 @@
                             <a class="btn btn-primary2" onclick="DeleteStudent()">Xóa sinh viên</a>
                         </div>
                         <div id="create_classroom" hidden>
+                            <br>
                             <div class="form-floating mb-3">
                                 <input required class="form-control" id="inputClassname" type="text" placeholder="Vui lòng nhập tên lớp học"  />
                                 <label for="inputClassname">Vui lòng nhập tên lớp học</label>
@@ -331,7 +332,7 @@
                             </div> -->
                                 <div>
                                     <label for="input">Chọn danh sách sinh viên:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                                    <input type="file" id="input"/><br><br>
+                                    <input type="file" id="inputDssv"/><br><br><p>(Chú ý: File excel phải có đủ các cột theo thứ tự là: mssv, name, gender, age, phone, email)</p><br>
                                     <a class="btn btn-primary2" onclick="readFile()">Tạo lớp học</a>
                                 </div>
                             </div>
@@ -493,7 +494,7 @@
                             </div>
                         </div>
                         
-                        <div id="sent_message" hidden class="left-form">
+                        <div id="sent_notification" hidden class="left-form">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
                             Gửi thông báo

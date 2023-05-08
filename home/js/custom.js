@@ -1,3 +1,4 @@
+document.body.style.zoom = "75%";
 /*------------------------------------------------------------------
 Project:        Modus - HTML onepage theme by GraphBerry.com
 Version:        1.0
