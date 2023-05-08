@@ -532,7 +532,6 @@ function GetID(){
             selectElement.onchange = function() {
             //  alert(selectElement.value);
             CLearTablename("lophoc");
-              // Lấy giá trị của tùy chọn được chọn
               db.collection("classRoom").doc(selectElement.value)
               .get()
               .then(function(doc) {
@@ -984,6 +983,7 @@ function GetDataTable(){
       soluong = [];
     });
 }
+
 var ctx = document.getElementById('myChart').getContext('2d');
 var ctx2 = document.getElementById('myChart');
 
@@ -1029,6 +1029,7 @@ var ctx2 = document.getElementById('myChart');
           },
           responsive: false, // thêm dòng này để tắt khả năng tương thích của biểu đồ với màn hình
           maintainAspectRatio: false // thêm dòng này để vô hiệu hóa tỷ lệ giữa chiều rộng và chiều cao
+          
       }
     });
   }
@@ -1574,6 +1575,7 @@ function addFriend(name,email) {
       // Gọi hàm chat ở đây
       // console.log(li.id);
       getChatroomId(cookie.email,email);
+      document.getElementById("info_chat_user").innerHTML = name;
     });
     friendList.appendChild(li);
 }
@@ -1601,6 +1603,9 @@ function removeFriend() {
           }else{
             email = data.users[0];
           }
+
+
+
           var db = firebase.firestore();
             var usersRef = db.collection("info");
             // Lấy document với trường email cụ thể
@@ -1608,16 +1613,47 @@ function removeFriend() {
               .get()
               .then(function(querySnapshot) {
                 querySnapshot.forEach(function(doc) {
+                  var data2 = doc.data();
+                  const newListItem = document.createElement('li');
+                  const img = document.createElement('img');
+                  img.src = '/dashboard/uploads/avatar/'+data2.mssv+'.png';
+
+                  function checkImageExists(url, callback) {
+                    var img = new Image();
+                    img.onload = function() {
+                      callback(true);
+                    };
+                    img.onerror = function() {
+                      callback(false);
+                    };
+                    img.src = url;
+                  }
+                  
+                  var url = img.src;
+                  checkImageExists(url, function(exists) {
+                    if (exists) {
+                      console.log('URL tồn tại');
+                      // Sử dụng URL hình ảnh
+                    } else {
+                      console.log('URL không tồn tại');
+                      img.src = '/dashboard/uploads/avatar/avarta.png';
+                    }
+                  });
+                  
+                  // Tạo phần tử span để chứa text
+                  const span = document.createElement('span');
+                  span.textContent = " "+data2.name;
                   // Doc là document tìm thấy
                   // console.log("Document tìm thấy: ", doc.id, " => ", doc.data());
-                  var data2 = doc.data();
-                  var li = document.createElement("li");
-                  li.innerText = data2.name;
-                  li.id = data2.email;
-                   li.addEventListener('click', () => {
-                     alert("ID người nhận: "+li.id);
+                  newListItem.appendChild(img);
+                  newListItem.appendChild(span);
+                  // newListItem.appendChild(lastMess);
+                  span.id = data2.email;
+                  span.addEventListener('click', () => {
+                     getChatroomId(cookie.email,span.id);
+                     document.getElementById("info_chat_user").innerHTML = span.textContent;
                    });
-                  chatList.appendChild(li);
+                  chatList.appendChild(newListItem);
                 });
               })
               .catch(function(error) {
