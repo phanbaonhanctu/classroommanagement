@@ -245,7 +245,7 @@ if (create_classroom == false){
   notification2.innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
   document.getElementById("xoasv").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
   document.getElementById("choncansu").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
-  document.getElementById("create_diemdanh").innerHTML = "Bạn Không Có Quyền Sử Dụng Chức Năng Này";
+  document.getElementById("create_diemdanh").innerHTML = "";
 }
 
 
@@ -1607,9 +1607,6 @@ function removeFriend() {
           }else{
             email = data.users[0];
           }
-
-
-
           var db = firebase.firestore();
             var usersRef = db.collection("info");
             // Lấy document với trường email cụ thể
@@ -1666,9 +1663,7 @@ function removeFriend() {
         })
       })
   }
-
   // kết thúc lấy danh sách hội thoại
-
   function getLastMessage(id){
     var lastMessage;
     var docRef2 = db.collection("chatRoom").doc(id).collection("chats");
