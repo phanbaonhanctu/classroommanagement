@@ -419,29 +419,43 @@ function GetID(){
             for (var mssv of doc.data().dssv) {
               // Lấy tham chiếu đến document có id là "abc123" trong collection "myCollection"
               var docRef = firebase.firestore().collection("info").doc(mssv);
-              // Lấy dữ liệu của document và xử lý kết quả
+              // docRef.onSnapshot(snapshot => {
+              //   const updatedData = snapshot.data();
+              //   showAlert('Document updated:', updatedData);
+              // });              
               docRef.get().then(function(doc2) {
                 const tableBody = $("#"+table+" tbody");
                 var data = doc2.data();
                 var vaitro = data.rule;
-
                 if (data.rule == 1){
                     vaitro = "<p style='color: darkblue;'>Cán sự</p>";
+                    const row = `
+                    <tr id='${data.mssv}'>
+                      <td>${data.mssv}</td>
+                      <td>${data.name}</td>
+                      <td>${data.email}</td>
+                      <td>${data.gender}</td>
+                      <td>${data.phone}</td>
+                      <td>${vaitro}</td>
+                      <td><input type="checkbox" class="checkbox"></td>
+                    </tr>
+                  `;
+                  tableBody.append(row);
                 }else{
                     vaitro = "Sinh viên";
+                    const row = `
+                    <tr id='${data.mssv}'>
+                      <td>${data.mssv}</td>
+                      <td>${data.name}</td>
+                      <td>${data.email}</td>
+                      <td>${data.gender}</td>
+                      <td>${data.phone}</td>
+                      <td>${vaitro}</td>
+                      <td><input type="checkbox" class="checkbox"></td>
+                    </tr>
+                  `;
+                  tableBody.append(row);
                 }
-                      const row = `
-                      <tr>
-                        <td>${data.mssv}</td>
-                        <td>${data.name}</td>
-                        <td>${data.email}</td>
-                        <td>${data.gender}</td>
-                        <td>${data.phone}</td>
-                        <td>${vaitro}</td>
-                        <td><input type="checkbox" class="checkbox"></td>
-                      </tr>
-                    `;
-                    tableBody.append(row);
               });
               $("#"+table).tablesorter();
           };
@@ -503,8 +517,6 @@ function GetID(){
       }
     }
   }
-
-
 
 
   var myButton = document.getElementById("inputdiemdanhname");
@@ -615,19 +627,90 @@ function GetID(){
       }
     });
 
-
-
-
     var listsv = [];
     var listsvuncheck = [];
-    function DeleteStudent(){
-      GetSvSelected();
-      DeleteSV(listsvuncheck);
-    }
+
+  function DeleteStudent(){
+    listsv.splice(0, listsv.length);
+    listsvuncheck.splice(0, listsvuncheck.length);
+    GetSvSelected("table-xoasv");
+    CLearTablename("table-xoasv");
+    DeleteSV(listsvuncheck);
+    var selected = document.getElementById("danhsachlophoc2");
+    var idclass = selected.value;
+    show_danhsachlophoc (idclass,"table-xoasv");
+  }
+
+  function DeleteSV(list){
+    var selectElement = document.getElementById("danhsachlophoc2").value;
+    var docRef = db.collection("classRoom").doc(selectElement);
+    docRef.update(
+      {
+        dssv: list
+      }
+    )
+    showAlert("Xóa thành công!");
+  }
 
   function UpdateStudent(){
-    GetSvSelected();
+    listsv.splice(0, listsv.length);
+    listsvuncheck.splice(0, listsvuncheck.length);
+    GetSvSelected("table-cansu");
+    CLearTablename("table-cansu");
     UpdateRule(listsv,listsvuncheck);
+    var selected = document.getElementById("danhsachlophoc");
+    var idclass = selected.value;
+    show_danhsachlophoc (idclass,"table-cansu");
+  }
+
+  function show_danhsachlophoc (classID,table){
+          db.collection("classRoom").doc(classID)
+          .get()
+          .then(function(doc) {
+            for (var mssv of doc.data().dssv) {
+              // Lấy tham chiếu đến document có id là "abc123" trong collection "myCollection"
+              var docRef = firebase.firestore().collection("info").doc(mssv);
+              // docRef.onSnapshot(snapshot => {
+              //   const updatedData = snapshot.data();
+              //   showAlert('Document updated:', updatedData);
+              // });              
+              docRef.get().then(function(doc2) {
+                const tableBody = $("#"+table+" tbody");
+                var data = doc2.data();
+                var vaitro = data.rule;
+                if (data.rule == 1){
+                    vaitro = "<p style='color: darkblue;'>Cán sự</p>";
+                    const row = `
+                    <tr id='${data.mssv}'>
+                      <td>${data.mssv}</td>
+                      <td>${data.name}</td>
+                      <td>${data.email}</td>
+                      <td>${data.gender}</td>
+                      <td>${data.phone}</td>
+                      <td>${vaitro}</td>
+                      <td><input type="checkbox" class="checkbox"></td>
+                    </tr>
+                  `;
+                  tableBody.append(row);
+                }else{
+                    vaitro = "Sinh viên";
+                    const row = `
+                    <tr id='${data.mssv}'>
+                      <td>${data.mssv}</td>
+                      <td>${data.name}</td>
+                      <td>${data.email}</td>
+                      <td>${data.gender}</td>
+                      <td>${data.phone}</td>
+                      <td>${vaitro}</td>
+                      <td><input type="checkbox" class="checkbox"></td>
+                    </tr>
+                  `;
+                  tableBody.append(row);
+                }
+              });
+              $("#"+table).tablesorter();
+          };
+          });
   }
 
   function UpdateRule(list,list2){
@@ -644,7 +727,8 @@ function GetID(){
           rule: "2"
       })
       }
-      showAlert("Cập nhật thành công!");
+    showAlert("Cập nhật thành công!");
+
   }
 
   function DeleteSV(list){
@@ -658,9 +742,10 @@ function GetID(){
     showAlert("Xóa thành công!");
   }
 
-  function GetSvSelected(){
+  function GetSvSelected(idtable){
                     // Lấy tất cả các ô kiểm tra
-                    var checkboxes = document.getElementsByClassName("checkbox");
+                    var table = document.getElementById(idtable);
+                    var checkboxes = table.getElementsByClassName("checkbox");
     
                     // Lưu trữ các hàng được chọn
                     var selectedRows = [];
@@ -687,6 +772,9 @@ function GetID(){
                       var masv = unselectedRows[j].cells[0].textContent;
                       listsvuncheck.push(masv);
                     }
+
+                    selectedRows.splice(0, listsv.length);
+                    unselectedRows.splice(0, listsvuncheck.length);
   }
 
     
